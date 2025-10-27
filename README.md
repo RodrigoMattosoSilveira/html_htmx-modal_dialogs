@@ -44,6 +44,7 @@ This amounts to building and launching he Go/Fiber HTTP Server, which I'll descr
 ### Launching the Application
 
 ![Local Image](uml/LaunchApplication.png)
+
 <sub>Launch Sequence Diagram</sub>
 
 - The Guest types the application URL in their Client's address bar;
@@ -51,12 +52,14 @@ This amounts to building and launching he Go/Fiber HTTP Server, which I'll descr
 - The Server collaborates with the Template to render the landing page, and to return it back to the client, via the Server;
 
 ![Local Image](images/LandingPage.png)
+
 <sub>Landing Page</sub>
 
 
 ### Show Browser Modal
 Now the Guest is ready to experiment with the browser triggered modal dialog:
 ![Local Image](uml/ShowBrowserModal.png)
+
 <sub>Show Browser Modal Sequence Diagram</sub>
 
 - The Guest clicks on the Landing Page's `Browser` button; this button includes two configuration elements to route the request and to assist HTMX to find where and then render the Browser Modal dialog:
@@ -67,6 +70,7 @@ Now the Guest is ready to experiment with the browser triggered modal dialog:
 - The Server collaborates with the Template to render the Browser Modal Dialog, and to return it back to the Client, via the Server;
 
 ![Local Image](images/BrowserModal.png)
+
 <sub>Browser Modal Dialog</sub>
 
 In addition to the Header and Body information, notice the `Exit`, being represented by an `x`, `Decline` and `Confirm` buttons.
