@@ -144,7 +144,14 @@ This markup has the following elements:
 </dialog>
 ```
 
-Here is where things get really interesting!
+Here is where things get really interesting, since we hightligh the power of HTMX and Hyperscript:
+- **.dialog**
+  - `on load call htmx.process(me) then call me.showModal() end` initializes Hyperscript and uses the HTML Dialog Box Element interface to open the dialog box, after HTMX placed its contents at the specified target locatioin;
+  - `on keydown if the event's key is 'Escape' then log `Clicked ESC key` remove me"`: When I click the `esc` key it logs it and removes the dialog;
+  - `on dialog_close wait 10ms then remove me end`: when Hyperscript detectes the `dialog_close` event it waits a bit and removes the dialog,
+  - Both buttons are configured to:
+    - use HTMX to trigger HTTP calls, both rendered during at the time the Modal Dialog Template is rendered;
+	- Log their usage in the Client's console
 
 ### Go/Fiber logic Configuration
 The logic below configures the [GoFiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/)  to render my HTML templates, and [Fiber](https://gofiber.io/) to support my routes.
@@ -229,4 +236,4 @@ Note that the third set of logs shows the Client request for a Browser Modal Dia
 
 <sub>Browser Modal Dialog Console Logs</sub>
 
-Note we have logs for all use cases
+Note we have logs for all Browser use cases
