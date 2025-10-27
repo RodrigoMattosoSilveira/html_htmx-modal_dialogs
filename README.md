@@ -78,7 +78,76 @@ In addition to the Header and Body information, notice the `Exit`, being represe
 Also, if I attempt to click on the `Browser` and `Server` buttons in the `Landing Page`, in this case hidden, I will observe they have been disabled, and will continue to be so until I dismiss the `Browser Modal Dialog`.
 
 ## Implementatioon
-I'll use a simple [Go](https://go.dev/), [Fiber](https://gofiber.io/) app, initialized as follows:
+### HTML Templates 
+#### Landing Page
+
+``` HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!--  See Github for details -->
+</head>
+<body>
+    <!-- Browser initiated dialog placeholder -->
+    <div id="htmx-browser-dialog-container"></div>
+
+    <!-- Server initiated dialog placeholder -->
+    <div id="htmx-server-dialog-container" _="on dialog_event from body put detail.value into me"></div>
+
+	<!-- Markup to display the buttons to request Browser or Server Modal dialogs -->
+	<!-- My styling is very poor, eventually I'll pretty it up -->
+	<div class="card d-flex aligns-items-center justify-content-center text-center w-75 position-absolute top-50 start-50 translate-middle">
+    	<div class="card-header">
+   			<h1>Modal Dialog tests</h1>
+		</div>
+		<div class="card-body">
+			<button type="button" class="btn btn-primary" hx-get="/browserModal" hx-target="#htmx-browser-dialog-container">Browser</button>
+			<button type="button" class="btn btn-success" hx-get="/serverModal" hx-target="#htmx-server-dialog-container">Server</button>
+		</div>
+	</div>
+	<!-- See Githiub for deetals -->
+  </body>
+</html>
+```
+
+This markup has the following elements:
+- **head**: Where I configure the HTML and the CSS required by the webapp; I ommited them here for clarity sake;
+- **#htmx-browser-dialog-container**: The location where HTMX will load the Modal Dialog Box requested by the Clilent;
+- **#htmx-server-dialog-container**: The location where HTMX will load the Modal Dialog Box triggered by the Server;
+- **.card**: The location of the UX element that hosts the Browser and Server buttons the I use to trigger requests for Browser or Server Modal Dialogs;
+  -  **hx-get** I used it in both buttons to direct HTMX to triger the HTTP calls required to handle the Browese and Server Use Cases
+  - **hx-target**: I used it in both buttons to direct where HTMX is to place the server responses;
+  
+#### Broswer Modal Dialog
+
+``` HTML
+<dialog class="dialog   w-75" _="on load call htmx.process(me) then call me.showModal() end
+                          on dialog_close wait 10ms then remove me end
+                          on keydown if the event's key is 'Escape' then log `Clicked ESC key` remove me">
+	<div class="card ">
+		<div class="card-header">
+			<div class="row">
+				<div class="col-md-10">
+					<h5 class="modal-title">{{ .title }}</h5>
+				</div>
+				<div class="col-md-2">
+					<button type="button" class="close" _="on click send dialog_close log 'Clicked Exit Button'"><span aria-hidden="true">&times;</span></button>
+				</div>
+			</div>
+		</div>
+		<div class="card-body">
+			<p class="card-text">{{ .body }}.</p>
+			<button type="button" class="btn btn-secondary" hx-get="/{{ .cancel_endpoint }}" hx-swap="none" _="on click send dialog_close log 'Clicked Seconday Button'">{{ .cancel_label }}</button>
+			<button type="button" class="btn btn-primary" hx-get="/{{ .confirm_endpoint }}"  hx-swap="none" _="on click send dialog_close log 'Clicked Primary Button'">{{ .confirm_label }}</button>
+		</div>
+	</div>
+</dialog>
+```
+
+Here is where things get really interesting!
+
+### Go/Fiber logic Configuration
+The logic below configures the [GoFiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/)  to render my HTML templates, and [Fiber](https://gofiber.io/) to support my routes.
 
 ``` go
 package main
@@ -103,3 +172,61 @@ func main() {
 }
  
 ```
+
+### Go/Fiber logic to handle Browser Triggered Client requests
+Next I add the routes to support our `Browser Modal Dialog` use cases:
+``` go
+    // ...
+
+	// Route to render the landing page
+	// Route to render the Landing Page
+	app.Get("/", func(c *fiber.Ctx) error {
+		log.Println("Route to render the Landing Page")
+		return c.Render("bsIndex", nil)
+	})
+
+	// Route to handle the Client request for the server to execute the logic
+	// that supports a browser triggered Modal Dialog rendering
+	app.Get("/browserModal", func(c *fiber.Ctx) error {
+		// return c.SendString("Generate Browser Modal!")
+ 		log.Println("Route to handle the Client request for the server to execute the logic that supports a browser triggered Modal Dialog rendering")
+        return c.Render("bsModalDialog", fiber.Map {
+            "title": "Browser Triggered Modal Title",
+            "body": "Browser Triggered Modal Body",
+            "confirm_endpoint": "browserModalAccept",
+            "confirm_label": "Accept",
+            "cancel_endpoint": "browserModalDecline",
+            "cancel_label": "Decline",       
+            })
+    })
+
+	// Route to render the Client Browser Modal Decline
+	app.Get("/browserModalDecline", func(c *fiber.Ctx) error {
+		message := "Route to handle the Person clicking the Decline button on the Browser Modal Dialog"
+		log.Println(message)
+		return c.Status(fiber.StatusOK).SendString(message)
+	})
+
+	// Route to render the Client Browser Modal Accept
+	app.Get("/browserModalAccept", func(c *fiber.Ctx) error {
+		message := "Route to handle the Person clicking the Accept button on the Browser Modal Dialog"
+		log.Println(message)
+		return c.Status(fiber.StatusOK).SendString(message)
+	})
+    
+	// ...
+```
+
+Although one migh conjure that the logic for the `/browserModalDecline` route is superflous, there are use cases where it is important to record the Person choice to decline a choice; hence, I elected to include it here for this reason and to offer me a solid proof the the request traveled the required round trip. I also `logged` the execution of all routes on the server on the Client console.
+
+![Local Image](images/BrowserModalDialogServerLogs.png)
+
+<sub>Browser Modal Dialog Server Logs</sub>
+
+Note that the third set of logs shows the Client request for a Browser Modal Dialog, but does not show the server action; this represents two uses cases, one where the Person types the `ESC` key or clicks on the  Modal Dialog box `x` button.
+
+![Local Image](images/BrowserModalDialogConsoleLogs.png)
+
+<sub>Browser Modal Dialog Console Logs</sub>
+
+Note we have logs for all use cases
