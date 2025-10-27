@@ -75,7 +75,7 @@ Now the Guest is ready to experiment with the browser triggered modal dialog:
 
 In addition to the Header and Body information, notice the `Exit`, being represented by an `x`, `Decline` and `Confirm` buttons.
 
-Also, if I attempt to click on the `Browser` and `Server` buttons in the `Landing Page`, ini this case hidden, I will observe they have been disabled, and will continue to be so until I dismiss the `Browser Modal Dialog`.
+Also, if I attempt to click on the `Browser` and `Server` buttons in the `Landing Page`, in this case hidden, I will observe they have been disabled, and will continue to be so until I dismiss the `Browser Modal Dialog`.
 
 ## Implementatioon
 I'll use a simple [Go](https://go.dev/), [Fiber](https://gofiber.io/) app, initialized as follows:
