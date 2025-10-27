@@ -16,11 +16,13 @@ Note that:
 - When refering to the `Client`, I'm referring to any **modern** browser;
 
 # A Word About our Demo Webapp
-Web applications using complex Client technology stacks, such as [React](https://react.dev/) and its vast constellation of addons, can handle the logic to triger, display, and manage Browser Modal Dialog boxes without any Server interaction. These web applications' Clients' technology stacks interact with their Servers to handle Server Dialog Boxes.
+Web applications using complex Client technology stacks, such as [React](https://react.dev/) and its vast constellation of addons, can handle the logic to triger, display, and manage `Browser Modal Dialog` boxes without any Server interaction. Their Clients' technology stacks interact with their Servers to handle `Server Modal Dialog` boxes.
 
-Our webapplication demo uses a significantly simpler Client technology stack, [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree, with a limited use of Javascript. It requires the Clilent to request the Server to provide the modal dialog box template, but then its is able to handle all Person;s interection with the box; like the former, its Clients' technology stack interacts with its Servers to handle Server Dialog Boxes. 
+Our webapp demo uses a significantly simpler Client technology stack, [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree, with a limited use of Javascript. It requires the Client to request the Server to provide the `Browser Modal Dialog` box Template, but then it handles all interections with the `Browser Modal Dialog` box; like the former, its Client' technology stack interacts with its Servers to handle `Server Modal Dialog` boxes. 
 
-In other words, whereas the former technology stack requires server interactions only for Server Modal Dialogs, our webapp requires two distinct types of Server interactions; one to simply serve the Browser Modal Dialog Template and the other to realize the requirement for a Server Modal Dialog, serve the template, collect and process the Person's interaction.
+In other words, whereas the former technology stack requires server interactions only for `Server Modal Dialogs`, our webapp requires two distinct types of Server interactions; one to simply serve the `Browser Modal Dialog` Template and the other to realize the requirement for a `Server Modal Dialog`, serve its Template, collect and process the Person's interaction.
+
+Our webapp will use the same Template for its `Browser Modal Dialog` and `Server Modal Dialogs`boxes, passing arguments to the Template Engine to render them accordingly.  
 
 # Broswer Triggered Modal Dialogs
 I'll discuss the use cases, the architecture required to support them, and the implementation to support them.
@@ -42,18 +44,20 @@ This amounts to building and launching he Go/Fiber HTTP Server, which I'll descr
 ### Launching the Application
 
 ![Local Image](uml/LaunchApplication.png)
+<sub>Launch Sequence Diagram</sub>
 
 - The Guest types the application URL in their Client's address bar;
 - The Client issues a "/" route request;
 - The Server collaborates with the Template to render the landing page, and to return it back to the client, via the Server;
 
 ![Local Image](images/LandingPage.png)
+<sub>Landing Page</sub>
 
-I'll address the markup shortcomings afterwards!
 
 ### Show Browser Modal
 Now the Guest is ready to experiment with the browser triggered modal dialog:
 ![Local Image](uml/ShowBrowserModal.png)
+<sub>Show Browser Modal Sequence Diagram</sub>
 
 - The Guest clicks on the Landing Page's `Browser` button; this button includes two configuration elements to route the request and to assist HTMX to find where and then render the Browser Modal dialog:
   - **hx-get**="/browserModal": it routes the request
@@ -63,13 +67,11 @@ Now the Guest is ready to experiment with the browser triggered modal dialog:
 - The Server collaborates with the Template to render the Browser Modal Dialog, and to return it back to the Client, via the Server;
 
 ![Local Image](images/BrowserModal.png)
+<sub>Browser Modal Dialog</sub>
 
-In addition to the Header and Body information, notice the 3 required buttons, with the Exit being represented by an `x`.
+In addition to the Header and Body information, notice the `Exit`, being represented by an `x`, `Decline` and `Confirm` buttons.
 
-Also, if I attempt to click on the `Browser` and `Server` buttons in the `Landing Page`, I will observe they have been disabled, and will continue to be so until I dismiss the `Browser Modal Dialog`.
-
-### Dismiss Browser Modal
-When I click on the `Browser Modal Dialog's` `x` button I observe that the Client dismisses it, wihouth any further action 
+Also, if I attempt to click on the `Browser` and `Server` buttons in the `Landing Page`, ini this case hidden, I will observe they have been disabled, and will continue to be so until I dismiss the `Browser Modal Dialog`.
 
 ## Implementatioon
 I'll use a simple [Go](https://go.dev/), [Fiber](https://gofiber.io/) app, initialized as follows:

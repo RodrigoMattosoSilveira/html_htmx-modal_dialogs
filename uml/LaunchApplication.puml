@@ -1,18 +1,28 @@
 @startuml LaunchApplication
-left to right direction
+title Launch Webapp
 skinparam sequenceMessageAlign center
-participant Browser
-participant Go_Fiber
-participant Template
 actor Guest
+participant Client
+participant Server
+participant Template
+
 autonumber 2.1
-Guest -> Browser: Launch Application
-note left
+Guest -> Client: Launch Application
+note right
  http://localhost:3000/
 end note
-Browser -> Go_Fiber: Request Modal Dialog Test UI
-Go_Fiber -> Template: Request Modal Dialog Test HTML
-Template --> Go_Fiber: Return Modal Dialog Test HTML
-Go_Fiber --> Browser: Return Modal Dialog Test HTML 
-Browser --> Guest: Render Modal Dialog Test UI
+Client -> Server: Request Modal Dialog Test UI
+note left
+ Any Modern Browser
+end note
+Server -> Template: Request Modal Dialog Test HTML
+note left
+ GO / Fiber
+end note
+Template --> Server: Return Modal Dialog Test HTML
+note right
+ GOFiber Template Engine
+end note
+Server --> Client: Return Modal Dialog Test HTML 
+Client --> Guest: Render Modal Dialog Test UI
 @enduml
