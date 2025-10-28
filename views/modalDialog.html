@@ -1,0 +1,22 @@
+<!-- Added Bootstrap Classes; still not clean -->
+<dialog class="dialog   w-75" _="on load call htmx.process(me) then call me.showModal() end
+                          on dialog_close wait 10ms then remove me end
+                          on keydown if the event's key is 'Escape' then log `Clicked ESC key` remove me">
+	<div class="card ">
+		<div class="card-header">
+			<div class="row">
+				<div class="col-md-10">
+					<h5 class="modal-title">{{ .title }}</h5>
+				</div>
+				<div class="col-md-2">
+					<button type="button" class="close" _="on click send dialog_close log 'Clicked Exit Button'"><span aria-hidden="true">&times;</span></button>
+				</div>
+			</div>
+		</div>
+		<div class="card-body">
+			<p class="card-text">{{ .body }}.</p>
+			<button type="button" class="btn btn-secondary" hx-get="/{{ .cancel_endpoint }}" hx-swap="none" _="on click send dialog_close log 'Clicked Seconday Button'">{{ .cancel_label }}</button>
+			<button type="button" class="btn btn-primary" hx-get="/{{ .confirm_endpoint }}"  hx-swap="none" _="on click send dialog_close log 'Clicked Primary Button'">{{ .confirm_label }}</button>
+		</div>
+	</div>
+</dialog>
