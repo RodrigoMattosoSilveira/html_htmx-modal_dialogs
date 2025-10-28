@@ -1,0 +1,12 @@
+@startuml Setup Client/Server
+title Setup Client/Server
+actor Guest
+autonumber 1.1
+Guest -> Server: Launch HTTP Server
+Server --> Guest: Fiber v2.52.4 http://127.0.0.1:8080
+Guest -> Client: Launch HTTP Client
+Client --> Guest: Browser Tab ready to go
+note right
+ any Browser will do
+end note
+@enduml

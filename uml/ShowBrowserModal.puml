@@ -1,0 +1,13 @@
+@startuml ShowBrowserModal
+title Show Browser Modal
+skinparam sequenceMessageAlign center
+actor Guest
+autonumber 3.1
+Guest -> Client: Click **Browser** Button
+Client -> Server: Routes the HTTP request to /browserModal
+Server -> Server: Build Browser Modal Data Map
+Server -> Template: Request Browser Modal Dialog HTML
+Template --> Server: Return Browser Modal Dialog Test HTML
+Server --> Client: Return Browser Modal Dialog HTML 
+Client --> Guest: Render Browser Modal Dialog UI
+@enduml

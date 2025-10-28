@@ -1,0 +1,28 @@
+@startuml LaunchApplication
+title Launch Webapp
+skinparam sequenceMessageAlign center
+actor Guest
+participant Client
+participant Server
+participant Template
+
+autonumber 2.1
+Guest -> Client: Launch Application
+note right
+ http://localhost:3000/
+end note
+Client -> Server: Request Modal Dialog Test UI
+note left
+ Any Modern Browser
+end note
+Server -> Template: Request Modal Dialog Test HTML
+note left
+ GO / Fiber
+end note
+Template --> Server: Return Modal Dialog Test HTML
+note right
+ GOFiber Template Engine
+end note
+Server --> Client: Return Modal Dialog Test HTML 
+Client --> Guest: Render Modal Dialog Test UI
+@enduml

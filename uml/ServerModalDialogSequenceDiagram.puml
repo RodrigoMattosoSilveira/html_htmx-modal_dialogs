@@ -1,0 +1,16 @@
+@startuml ShowBrowserModal
+title Show Browser Modal
+skinparam sequenceMessageAlign center
+actor Guest
+autonumber 3.1
+Guest -> Client: Click **Browser** Button
+Client -> Server: Routes the HTTP request to /browserModal
+Server -> Server: Detect requirement to send Server Modal Dialog
+Server -> Server: Configure HX-Trigger to trigger event
+Server -> Server: Build Server Modal Data Map
+Server -> Template: Request Server Modal Dialog HTML
+Template --> Server: Return Server Modal Dialog Test HTML
+Server --> Client: Return Server Modal Dialog HTML 
+Client --> Client: Issue dialog_event
+Client --> Guest: Render Server Modal Dialog UI
+@enduml
