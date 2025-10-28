@@ -1,0 +1,17 @@
+@startuml InformModalDialog
+left to right direction
+title Use Cases - Inform Modal Dialog
+actor Guest as guest
+package webapp {
+    usecase "Inspect Inform Modal Logs" as InspectInformModalLogs
+    usecase "Exit Inform Modal" as ExitInformModal
+    usecase "Dismiss Inform Modal" as DismissInformModal
+    usecase "Request Inform Modal" as RequestInformModal
+
+}
+
+guest --> InspectInformModalLogs
+guest --> ExitInformModal
+guest --> DismissInformModal
+guest --> RequestInformModal
+@enduml
