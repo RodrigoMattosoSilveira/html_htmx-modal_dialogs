@@ -20,7 +20,7 @@ Web applications using complex Client technology stacks, such as [React](https:/
 
 Our webapp demo uses a significantly simpler Client technology stack, [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree, with a limited use of Javascript. It requires the Client to request the Server to provide the `Browser Modal Dialog` box Template, but then it handles all interections with the `Browser Modal Dialog` box; like the former, its Client' technology stack interacts with its Servers to handle `Server Modal Dialog` boxes. 
 
-In other words, whereas the former technology stack requires server interactions only for `Server Modal Dialogs`, our webapp requires two distinct types of Server interactions; one to simply serve the `Browser Modal Dialog` Template and the other to realize the requirement for a `Server Modal Dialog`, serve its Template, collect and process the Person's interaction.
+In other words, whereas the former technology stack requires server interactions only for `Server Modal Dialogs`, our webapp requires two distinct types of Server interactions; one to simply serve the `Browser Modal Dialog` Template and the other to realize the requirement for a `Server Modal Dialog`, serve its Template, collect and process the Guest's interaction.
 
 Our webapp will use the same Template for its `Browser Modal Dialog` and `Server Modal Dialogs`boxes, passing arguments to the Template Engine to render them accordingly.  
 
@@ -209,14 +209,14 @@ Next I add the routes to support our `Browser Modal Dialog` use cases:
 
 	// Route to render the Client Browser Modal Decline
 	app.Get("/browserModalDecline", func(c *fiber.Ctx) error {
-		message := "Route to handle the Person clicking the Decline button on the Browser Modal Dialog"
+		message := "Route to handle the Guest clicking the Decline button on the Browser Modal Dialog"
 		log.Println(message)
 		return c.Status(fiber.StatusOK).SendString(message)
 	})
 
 	// Route to render the Client Browser Modal Accept
 	app.Get("/browserModalAccept", func(c *fiber.Ctx) error {
-		message := "Route to handle the Person clicking the Accept button on the Browser Modal Dialog"
+		message := "Route to handle the Guest clicking the Accept button on the Browser Modal Dialog"
 		log.Println(message)
 		return c.Status(fiber.StatusOK).SendString(message)
 	})
@@ -224,7 +224,119 @@ Next I add the routes to support our `Browser Modal Dialog` use cases:
 	// ...
 ```
 
-Although one migh conjure that the logic for the `/browserModalDecline` route is superflous, there are use cases where it is important to record the Person choice to decline a choice; hence, I elected to include it here for this reason and to offer me a solid proof the the request traveled the required round trip. I also `logged` the execution of all routes on the server on the Client console.
+Although one might conjure that the logic for the `/browserModalDecline` route is superflous, there are use cases where it is important to record the Guest's choice to decline a choice; hence, I elected to include it here for this reason and to offer me a solid proof the the request traveled the required round trip. I also `logged` the execution of all routes on the server on the Client console.
+
+![Local Image](images/BrowserModalDialogServerLogs.png)
+
+<sub>Browser Modal Dialog Server Logs</sub>
+
+Note that the third set of logs shows the Client request for a Browser Modal Dialog, but does not show the server action; this represents two uses cases, one where the Guest types the `ESC` key or clicks on the  Modal Dialog box `x` button.
+
+![Local Image](images/BrowserModalDialogConsoleLogs.png)
+
+<sub>Browser Modal Dialog Console Logs</sub>
+
+Note we have logs for all Browser use cases
+
+
+# Server Triggered Modal Dialogs
+I'll discuss the use cases, the architecture required to support them, and the implementation to support them.
+
+## Use Cases
+- ... omited the Browser Model Dialog Use Cases
+- **Launch Appplication**: I, as a guest, want to type the Server listening address in the Client address Bar to launch the demo application and see a `Landing Page` consisting of a UI element named `Modal Dialog Tests`, inclulding a button, `Browser`;
+- **Show Server Modal**: I, as a guest, when at the `Modal Dialog Tests` landing page, want to clik on the `Server` button and observe a response consting of a modal dialog including `Exit`, a `Decline`, and an `Accept` buttons;
+- **Dismiss Server Modal**:  I, as a guest, when at the Server Modal Dialog, want to clik the `Exit` button and dismiss the dialong without any additional system behavior;
+- **Decline Server Modal**:  I, as a guest, when at the Dialog Tests screen, want to clik the `Decline` button, receive a reply from the server indicating that I clicked the Decline button, and dismiss the dialong without any additional system behavior;
+- **Accept Server Modal**:  I, as a guest, when at the Dialog Tests screen, want to clik the `Accept` button, receive a reply from the server indicating I clicked the Accept button, and dismiss the dialong without any additional system behavior;
+
+## Architecture
+I'll focus on the differences between the Browser and Server Model Diagrams logic
+
+### Setup Client/Server
+Same
+
+### Launching the Application
+Same as for the `Browser Modal` use cases:
+
+### Show Server Modal
+Now the Guest is ready to experiment with the browser triggered modal dialog:
+![Local Image](uml/ServerModalDialogSequenceDiagram.png)
+
+<sub>Server Modal Dialog Sequence Diagram</sub>
+
+- The Guest clicks on the Landing Page's `Server` button; this button includes two configuration elements to route the request and to assist HTMX to find where and then render the Browser Modal dialog:
+- **hx-get**="/serverModal": it routes the request
+- **hx-target**="#htmx-server-dialog-container">: it points to HTMX where to render the resulting Modal Dialog
+- The Client, with HTMX assistance, issues an "/serverModal" HTTP request to the Server;
+- this is the heart of the difference between the two on the Server side
+  - The server detects the requirement to issue a Modal Dialog box; 
+  -  The server configures the HX-Trigger Response Header attribute; HTMX will identify it and trigger the event that shows the Modal Dialog;
+- The Server fills up a map with the arguments required for Modal Dialog--note that I'm referring to a generic instead of specific Modal Dialog; this is the same Modal Dialog Template as I used for the Browser Modal Dialog;
+- The Server collaborates with the Template to render the Server Modal Dialog, and to return it back to the Client, via the Server;
+
+![Local Image](images/ServerModal.png)
+
+<sub>Server Modal Dialog</sub>
+
+In addition to the Header and Body information, notice the `Exit`, being represented by an `x`, `Decline` and `Confirm` buttons.
+
+Also, if I attempt to click on the `Browser` and `Server` buttons in the `Landing Page`, in this case hidden, I will observe they have been disabled, and will continue to be so until I dismiss the `Browser Modal Dialog`.
+
+## Implementatioon
+### HTML Templates 
+#### Landing Page
+Same as for the Broweser Modal Dialog
+  
+#### Broswer Modal Dialog
+Same as for the Broweser Modal Dialog
+
+### Go/Fiber logic Configuration
+Same as for the Broweser Modal Dialog
+
+### Go/Fiber logic to handle Browser Triggered Client requests
+Next I add the routes to support our `Server Modal Dialog` use cases:
+``` go
+    // ...
+
+	// Route to handle the Client request for the server to execute the logic
+	// that supports a server triggered Modal Dialog rendering
+	app.Get("/serverModal", func(c *fiber.Ctx) error {
+		// return c.SendString("Generate Server Modal!")
+		log.Println("Route to handle the Client request for the server to execute the logic that supports a server triggered Modal Dialog rendering")
+        data := fiber.Map {
+            "title": "Server Triggered Modal Title",
+            "body": "Server Triggered Modal Body",
+            "confirm_endpoint": "serverModalAccept",
+            "confirm_label": "Accept",
+            "cancel_endpoint": "serverModalDecline",
+            "cancel_label": "Decline",       
+            }
+
+        // Trigger a dialog_event in the server!
+        c.Set("HX-Trigger", "dialog_event")
+        return c.Render("modalDialog", data)
+	})
+
+	// Route to render the Client Browser Modal Decline
+	app.Get("/serverModalDecline", func(c *fiber.Ctx) error {
+		message := "Route to handle the Guest clicking the Decline button on the Server Modal Dialog"
+		log.Println(message)
+		return c.Status(fiber.StatusOK).SendString(message)
+	})
+
+	// Route to render the main page
+	app.Get("/serverModalAccept", func(c *fiber.Ctx) error {
+		message := "Route to handle the Guest clicking the Accept button on the Server Modal Dialog"
+		log.Println(message)
+		return c.Status(fiber.StatusOK).SendString(message)
+	})
+    
+	// ...
+```
+Note that, in the `Server Modal Dialog` use case, the server configures the `Response Header` the the `HX-Trigger` attribute set to `dialog-event`, which is not the case for the Browser one. 
+
+Although one might conjure that the logic for the `/browserModalDecline` route is superflous, there are use cases where it is important to record the Guest choice to decline a choice; hence, I elected to include it here for this reason and to offer me a solid proof the the request traveled the required round trip. I also `logged` the execution of all routes on the server on the Client console.
 
 ![Local Image](images/BrowserModalDialogServerLogs.png)
 
