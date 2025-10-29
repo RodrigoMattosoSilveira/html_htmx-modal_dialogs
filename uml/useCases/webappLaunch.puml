@@ -1,0 +1,12 @@
+@startuml setiup
+left to right direction
+title Webbapp Launch
+actor Guest as guest
+package webapp {
+  usecase "Launch Client" as LaunchClient
+  usecase "Launch Server" as LaunchServer
+}
+
+guest --> LaunchClient
+guest --> LaunchServer
+@enduml

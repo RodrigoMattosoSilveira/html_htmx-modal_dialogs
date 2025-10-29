@@ -1,0 +1,19 @@
+@startuml CollectModalDialog
+left to right direction
+title Use Cases - Collect Modal Dialog
+actor Guest as guest
+package webapp {
+  usecase "Inspect Collect Modal Logs" as InspectCollectModalLogs
+  usecase "Submit Collect Modal" as SubmitCollectModal
+  usecase "Type Data into Collect Modal" as TypeCollectModal
+  usecase "Exit Collect Modal" as ExitCollectModal
+  usecase "Dismiss Collect Modal" as DismissCollectModal
+  usecase "Request Collect Modal" as RequestCollectModal
+}
+
+guest --> RequestCollectModal
+guest --> DismissCollectModal
+guest --> SubmitCollectModal
+guest --> TypeCollectModal
+guest --> InspectCollectModalLogs
+@enduml

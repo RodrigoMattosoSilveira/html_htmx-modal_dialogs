@@ -1,0 +1,34 @@
+@startuml LaunchApplication
+title Launch Webapp
+skinparam sequenceMessageAlign center
+actor Guest
+participant Client [
+    =Client
+    ----
+    ""HTMX/Hyperscript/Bootstrap""
+]
+participant Server [
+    =Server
+    ----
+    ""Go/Fiber""
+]
+participant Template [
+    =Template
+    ----
+    ""GoFiber_Template""
+]
+
+autonumber
+Guest -> Client: Launch Application
+note right
+ http://localhost:3000/
+end note
+Client -> Server: Request Landing Page
+note left
+ Any Modern Browser
+end note
+Server -> Template: Request Landing Page HTML
+Template --> Server: Return Landing Page HTML
+Server --> Client: Return Landing Page HTML 
+Client --> Guest: Render Landing Page
+@enduml
