@@ -1,4 +1,7 @@
-# Abstract and Acknowlegemens
+# Table of Contents 
+1. [Abstract and Acknowlegement] (#abstract-and-acknowlegement)
+
+# Abstract and Acknowlegement
 I decided to build a mobile-first SaaS enterprise resourse planning application. The mobile-first requirement imposed two constraints. One, I'm not inclined to build at least two native applications, or spend money with frameworks that support it. Second, a webapp running on a phone must be stingy with resource utilization to prevent performance degradation.
 
 This lead me to architect a solution with a minimal Browser footprint, using [Go](https://go.dev/) as the server engine and [Fiber](https://gofiber.io/) as the HTTP server. This led me to leveraging [Go HTML Templates](https://pkg.go.dev/html/template) in conjunction with the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) to collaborate with [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client.
@@ -25,19 +28,31 @@ The _Landing Page_ includes 3 buttons,  `Prompt`, `Inform`, and `Collect`. Note 
 
 The _Prompt_ buttton triggers a _Modal Dialog_ requiring a guest action to confirm an operation, or dismiss the dialog; this is a _Browser_ _Modal Dialog_. The _Inform_ buttton triggers a _Modal Dialog_ informing the guest about a Server state, without requiring any addition action other than dismiss the dialog; this is a _Server_ _Modal Dialog_. The _Collect_ buttton triggers a _Modal Dialog_ asking the guest to provide a data element, or dismiss the dialog; this is a more complex _Server_ _Modal Dialog_.
 
-# Launch Webapp
-This is the logic to support launching the webapp and arriving at the _Landing Page_
-## Use Cases
-A use case is a detailed description of how a user interacts with a system to achieve a specific goal. Although ours are relatively simple, I included them here since I wrote and used them to implement the webapp, and thought they would help me explaning the webapp. Following are the use cases for our webapp, including the logic I used to implemenet them:
-1. **Launch Server**: I, as a guest, when I launch the _Server_, I want to see the _Fiber_ log incating that its ready to handle _HTTP_ requests;
-1. **Launch Client**: I, as a guest, when I launch the _Client_, after typing the server access URL, want to see the _Landing Page_ consisting of a UI element named `Modal Dialog Tests`, inclulding two buttons, `Prompt`, `Inform`, and `Collect`;
+# Implementation
+I'll describe the webapp implementation as follows, including sequence diagrams:
+- Launch webapp
+- Prompt Modal Dialog
+- Inform Modal Dialog
+- Collect Modal Dialog
 
+For each of the four topics above I'll describe:
+- The Use Cases, using use case diagrams; a use case is a detailed description of how a user interacts with a system to achieve a specific goal. Although ours are relatively simple, I included them here since I wrote and used them to implement the webapp, and thought they would help me explaning the webapp. Following are the use cases for our webapp, including the logic I used to implemenet them:
+- The Server Implementation
+- The Client Implementation
+
+## Launch Webapp
+This is the logic to support launching the webapp and arriving at the _Landing Page_
+### Launch Webapp Use Cases
 
 ![Local Image](uml/useCases/webappLaunch.png)
 
 <sub>Launch Webapp</sub>
 
-### The Server
+1. **Launch Server**: I, as a guest, when I launch the _Server_, I want to see the _Fiber_ log incating that its ready to handle _HTTP_ requests;
+1. **Launch Client**: I, as a guest, when I launch the _Client_, after typing the server access URL, want to see the _Landing Page_ consisting of a UI element named `Modal Dialog Tests`, inclulding two buttons, `Prompt`, `Inform`, and `Collect`;
+
+
+### Launch Webapp Server
 ``` go
 package main
 
@@ -89,7 +104,7 @@ Notes:
 
 <sub>Launch Server</sub>
 
-### The Client
+### Launch Webapp Client
 I'll focus on the markup required to render the Landing Page, ommiting everything else, given our focus on the Modal Dialogs and the logic to publish, use, and handle them:
 ``` html
 <!DOCTYPE html>
@@ -127,7 +142,6 @@ Notes:
   - ` hx-get="/informModal"` - Triggers the _Server_ to render a _Server Modal Dialog_, informing the guest about a system state, like an attempt on the guest's part to access an unauthorized resource;
   -   - ` hx-get="/collectModal"` - Triggers the _Server_ to render a _Server Modal Dialog_, prompting the guest to provide data;
   -   
-### The Rendered Langing Page
 
 ![Local Image](images/LandingPage.png)
 
