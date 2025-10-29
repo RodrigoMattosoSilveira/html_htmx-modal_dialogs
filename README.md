@@ -25,17 +25,19 @@ The _Landing Page_ includes 3 buttons,  `Prompt`, `Inform`, and `Collect`. Note 
 
 The _Prompt_ buttton triggers a _Modal Dialog_ requiring a guest action to confirm an operation, or dismiss the dialog; this is a _Browser_ _Modal Dialog_. The _Inform_ buttton triggers a _Modal Dialog_ informing the guest about a Server state, without requiring any addition action other than dismiss the dialog; this is a _Server_ _Modal Dialog_. The _Collect_ buttton triggers a _Modal Dialog_ asking the guest to provide a data element, or dismiss the dialog; this is a more complex _Server_ _Modal Dialog_.
 
-# Use Cases
+# Launch Webapp
+This is the logic to support launching the webapp and arriving at the _Landing Page_
+## Use Cases
 A use case is a detailed description of how a user interacts with a system to achieve a specific goal. Although ours are relatively simple, I included them here since I wrote and used them to implement the webapp, and thought they would help me explaning the webapp. Following are the use cases for our webapp, including the logic I used to implemenet them:
-## Launch Webapp
-1. **Setup Server**: I, as a guest, when I launch the _Server_, I want to see the _Fiber_ log incating that its ready to handle _HTTP_ requests;
-1. **Setup Client**: I, as a guest, when I launch the _Client_, after typing the server access URL, want to see the _Landing Page_ consisting of a UI element named `Modal Dialog Tests`, inclulding two buttons, `Prompt`, `Inform`, and `Collect`;
+1. **Launch Server**: I, as a guest, when I launch the _Server_, I want to see the _Fiber_ log incating that its ready to handle _HTTP_ requests;
+1. **Launch Client**: I, as a guest, when I launch the _Client_, after typing the server access URL, want to see the _Landing Page_ consisting of a UI element named `Modal Dialog Tests`, inclulding two buttons, `Prompt`, `Inform`, and `Collect`;
+
 
 ![Local Image](uml/useCases/webappLaunch.png)
 
 <sub>Launch Webapp</sub>
 
-### The Server Logic
+### The Server
 ``` go
 package main
 
@@ -82,8 +84,12 @@ Notes:
 	})
 ```
 - The command `	app.Listen(":3000")` configures the HTTP Server, Fiber, to listen on port 3000;
-- 
-### The Landing Page HTML Fragment
+  
+![Local Image](images/fiber.png)
+
+<sub>Launch Server</sub>
+
+### The Client
 I'll focus on the markup required to render the Landing Page, ommiting everything else, given our focus on the Modal Dialogs and the logic to publish, use, and handle them:
 ``` html
 <!DOCTYPE html>
