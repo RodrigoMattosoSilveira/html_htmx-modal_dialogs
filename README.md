@@ -38,7 +38,7 @@ I'll describe the webapp implementation in four section, as follows, including u
 - Collect Modal Dialog
 
 For each of the four topics above I'll describe:
-- The Use Cases, using use case diagrams; a use case is a detailed description of how a user interacts with a system to achieve a specific goal. Although ours are relatively simple, I included them here since I wrote and used them to implement the webapp, and thought they would help me explain the webapp. Following are the use cases for our webapp, including the logic I used to implement them:
+- The Use Cases, using use case diagrams; a use case is a detailed description of how a user interacts with a system to achieve a specific goal. Although ours are relatively simple, I included them here since I wrote and used them to implement the webapp.
 - The Server Implementation
 - The Client Implementation
 
