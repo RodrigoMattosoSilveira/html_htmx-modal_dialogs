@@ -1,16 +1,13 @@
-# Table of Contents 
-1. [Abstract and Acknowlegement] (#abstract-and-acknowlegement)
-
-# Abstract and Acknowlegement
-I decided to build a mobile-first SaaS enterprise resourse planning application. The mobile-first requirement imposed two constraints. One, I'm not inclined to build at least two native applications, or spend money with frameworks that support it. Second, a webapp running on a phone must be stingy with resource utilization to prevent performance degradation.
+# Abstract and Acknowledgement
+I decided to build a mobile-first SaaS enterprise resource planning application. The mobile-first requirement imposed two constraints. One, I'm not inclined to build at least two native applications, or spend money with frameworks that support it. Second, a webapp running on a phone must be stingy with resource utilization to prevent performance degradation.
 
 This lead me to architect a solution with a minimal Browser footprint, using [Go](https://go.dev/) as the server engine and [Fiber](https://gofiber.io/) as the HTTP server. This led me to leveraging [Go HTML Templates](https://pkg.go.dev/html/template) in conjunction with the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) to collaborate with [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client.
 
-Shortly into my work, I was challenged how to implement `Modal Dialogs` issued by the server, as for instance, to inform the guest they do not have the authortizarion to access a resource. The excellent article [Two ways to build HTML dialogs using HTMX and HyperScript](https://medium.com/@martin.mohnhaupt/two-ways-to-build-html-dialogs-using-htmx-and-hyperscript-5f5eefb13c4c) by [Martin Mohnhaupt](https://medium.com/@martin.mohnhaupt) has been instrumental to aid me in thinking about and implementing `Modal Dialogs` in my webapp. 
+Shortly into my work, I was challenged on how to implement `Modal Dialogs` issued by the server, as for instance, to inform the guest they do not have the authorization to access a resource. The excellent article [Two ways to build HTML dialogs using HTMX and HyperScript](https://medium.com/@martin.mohnhaupt/two-ways-to-build-html-dialogs-using-htmx-and-hyperscript-5f5eefb13c4c) by [Martin Mohnhaupt](https://medium.com/@martin.mohnhaupt) has been instrumental to aid me in thinking about and implementing `Modal Dialogs` in my webapp. 
 
-This repository introduces two different methods to display `Modal Dialogs`, `Browser Modal Dialog` and `Server Modal Dialog`. A _Modal Dialog_ is a pop-up window that appears on top of the current browser page, requiring user interaction before the user can return to the main content. It is commonly used to request confirmation to proceed with a destructive opperation, notify the user of a relevant application state, or collect required information from the user. We use _Browser Modal Dialogs_ to prompt the user to confirm an action, such as deleting a record, and _Server Modal Dialogs_ to either inform the user about the result of an operation, like lack of authorization for access a resource-- or to collected addition data, like a phone number.
+This repository introduces two different methods to display `Modal Dialogs`, `Browser Modal Dialog` and `Server Modal Dialog`. A _Modal Dialog_ is a pop-up window that appears on top of the current browser page, requiring user interaction before the user can return to the main content. It is commonly used to request confirmation to proceed with a destructive operation, notify the user of a relevant application state, or collect required information from the user. We use _Browser Modal Dialogs_ to prompt the user to confirm an action, such as deleting a record, and _Server Modal Dialogs_ to either inform the user about the result of an operation, like lack of authorization for access a resource-- or to collect additional data, like a phone number.
 
-I will demonstrate Martin's approach, refactored to suit my requirements, using a simple web application with a technology stack consisting of  [Go](https://go.dev/), [Fiber](https://gofiber.io/),  and the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) on the Server, and [Bootstrap 5](https://getbootstrap.com/) , [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client. This technology stack requires the Server to serve HTML, whereas other stacks use JSON requiring more complex technology stack on the Client; it also provides the software engineer with strategist to define precise places in the `DOM Tree`, as well as to decorate some of the DOM Tree elements with event handling instructions. 
+I will demonstrate Martin's approach, refactored to suit my requirements, using a simple web application with a technology stack consisting of  [Go](https://go.dev/), [Fiber](https://gofiber.io/),  and the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) on the Server, and [Bootstrap 5](https://getbootstrap.com/) , [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client. This technology stack requires the Server to serve HTML, whereas other stacks use JSON requiring more complex technology stack on the Client; it also provides the software engineer with strategies to define precise places in the `DOM Tree`, as well as to decorate some of the DOM Tree elements with event handling instructions. 
 Note that:
 - I'll use the term `Server`, to refer to the `Go/Fiber` HTTP server;
 - I'll use the term `Template`,to refer to the `GoFiber Template` engine;
@@ -20,13 +17,13 @@ Note that:
 You can find the full implemention at [this repo](https://github.com/RodrigoMattosoSilveira/html_htmx-modal_dialogs) on [my github account](https://github.com/RodrigoMattosoSilveira).
 
 # A Word About the Webapp Demo
-Web applications using complex Client technology stacks, such as [React](https://react.dev/) and its vast constellation of addons, can handle the logic to triger, display, and manage _Modal Dialogs_  with minimal Server interaction. 
+Web applications using complex Client technology stacks, such as [React](https://react.dev/) and its vast constellation of addons, can handle the logic to trigger, display, and manage _Modal Dialogs_  with minimal Server interaction. 
 
 This _webapp_ uses a significantly simpler Client technology stack, [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree, with a limited use of Javascript. Instead of relying on JSON payload and complex logic to express the User Experience, it relys on fully rendered HTL 
 
 The _Landing Page_ includes 3 buttons,  `Prompt`, `Inform`, and `Collect`. Note that all 3 include logic requiring the _Client_ to request the Server to provide their _HTML_, and that this logic is decoupled of the _Modal Dialogs_ in of themselves. 
 
-The _Prompt_ buttton triggers a _Modal Dialog_ requiring a guest action to confirm an operation, or dismiss the dialog; this is a _Browser_ _Modal Dialog_. The _Inform_ buttton triggers a _Modal Dialog_ informing the guest about a Server state, without requiring any addition action other than dismiss the dialog; this is a _Server_ _Modal Dialog_. The _Collect_ buttton triggers a _Modal Dialog_ asking the guest to provide a data element, or dismiss the dialog; this is a more complex _Server_ _Modal Dialog_.
+The _Prompt_ button triggers a _Modal Dialog_ requiring a guest action to confirm an operation, or dismiss the dialog; this is a _Browser_ _Modal Dialog_. The _Inform_ button triggers a _Modal Dialog_ informing the guest about a Server state, without requiring any additional action other than dismissing the dialog; this is a _Server_ _Modal Dialog_. The _Collect_ button triggers a _Modal Dialog_ asking the guest to provide a data element, or dismiss the dialog; this is a more complex _Server_ _Modal Dialog_.
 
 # Implementation
 I'll describe the webapp implementation as follows, including sequence diagrams:
@@ -36,7 +33,7 @@ I'll describe the webapp implementation as follows, including sequence diagrams:
 - Collect Modal Dialog
 
 For each of the four topics above I'll describe:
-- The Use Cases, using use case diagrams; a use case is a detailed description of how a user interacts with a system to achieve a specific goal. Although ours are relatively simple, I included them here since I wrote and used them to implement the webapp, and thought they would help me explaning the webapp. Following are the use cases for our webapp, including the logic I used to implemenet them:
+- The Use Cases, using use case diagrams; a use case is a detailed description of how a user interacts with a system to achieve a specific goal. Although ours are relatively simple, I included them here since I wrote and used them to implement the webapp, and thought they would help me explain the webapp. Following are the use cases for our webapp, including the logic I used to implement them:
 - The Server Implementation
 - The Client Implementation
 
@@ -48,8 +45,8 @@ This is the logic to support launching the webapp and arriving at the _Landing P
 
 <sub>Launch Webapp</sub>
 
-1. **Launch Server**: I, as a guest, when I launch the _Server_, I want to see the _Fiber_ log incating that its ready to handle _HTTP_ requests;
-1. **Launch Client**: I, as a guest, when I launch the _Client_, after typing the server access URL, want to see the _Landing Page_ consisting of a UI element named `Modal Dialog Tests`, inclulding two buttons, `Prompt`, `Inform`, and `Collect`;
+1. **Launch Server**: I, as a guest, when I launch the _Server_, I want to see the _Fiber_ log indicating that its ready to handle _HTTP_ requests;
+1. **Launch Client**: I, as a guest, when I launch the _Client_, after typing the server access URL, want to see the _Landing Page_ consisting of a UI element named `Modal Dialog Tests`, including two buttons, `Prompt`, `Inform`, and `Collect`;
 
 
 ### Launch Webapp Server
@@ -135,9 +132,9 @@ I'll focus on the markup required to render the Landing Page, ommiting everythin
 </html>
 ```
 Notes:
-- The architure requires that I use two different landing regions for the _Modal Dialogs_, depending on their nature (it took me a long timne to find an example that made a working distinction). I use ` <div id="htmx-browser-dialog-container">` to host _Browser Modal Dialogs_ and ` <div id="htmx-server-dialog-container">` to host _Server Modal Dialogs_; the the discussion below for the strategy to place them at these elements;
+- The architecture requires that I use two different landing regions for the _Modal Dialogs_, depending on their nature (it took me a long time to find an example that made a working distinction). I use ` <div id="htmx-browser-dialog-container">` to host _Browser Modal Dialogs_ and ` <div id="htmx-server-dialog-container">` to host _Server Modal Dialogs_; the the discussion below for the strategy to place them at these elements;
 - I used a [Bootstrap Card](https://getbootstrap.com/docs/5.3/components/card/) to help build this responsive user experience expeditiously;
-- The heart of the User Experience logic reside in the elment `<div class="card-body">`, consisting of three buttons:
+- The heart of the User Experience logic reside in the element `<div class="card-body">`, consisting of three buttons:
   - ` hx-get="/promptModal"` - Triggers the _Server_ to render a _Browser Modal Dialog_, prompting the guest to either proceed or abandon a dangerous operation;
   - ` hx-get="/informModal"` - Triggers the _Server_ to render a _Server Modal Dialog_, informing the guest about a system state, like an attempt on the guest's part to access an unauthorized resource;
   -   - ` hx-get="/collectModal"` - Triggers the _Server_ to render a _Server Modal Dialog_, prompting the guest to provide data;
@@ -148,345 +145,285 @@ Notes:
 <sub>Landing Page</sub>
 
 ## Prompt Modal Dialog
+### Prompt Modal Dialog Use Cases
 1. **Show Prompt Modal Dialog**: I, as a guest, when at the _Landing Page_, want to clik on the _Prompt_ button and observe a _Modal Dialog_ response, consisting of: i. a _Header_ informing me of an _Action Required_, e.g., _Action Required_, ii. a body with details about the required action, e.g, _Please confirm your choice to DELETE this record, or click x to dismiss_, and iii. a _Footer_ with a _Primary / Danger_ button with the text _Confirm_;
-1. **Prompt Modal Dialog Dismiss**: I, as a guest, after triggering the Prompt Modal Dialog_, want dismiss the dialog without confirrming the prompt;
-1. **Prompt Modal Dialog Exit**: I, as a guest, after triggering the Prompt Modal Dialog_, want exit the dialog without confirrming the prompt;
-1. **Prompt Modal Dialog Confirm**: I, as a guest, after triggering the Prompt Modal Dialog_, want to Confirm the prompt;
-1. **Prompt Modal Dialog Follow Up**: I, as a guest, after confirming or dismissing a _Prompt_ _Modal Dialog_, want to see _Server_ and _Client_ logs reflecing my choice;
+1. **Prompt Modal Dialog Dismiss**: I, as a guest, after triggering the _Prompt Modal Dialog_, want dismiss the dialog without confirrming the prompt;
+1. **Prompt Modal Dialog Exit**: I, as a guest, after triggering the _Prompt Modal Dialog_, want exit the dialog without confirrming the prompt;
+1. **Prompt Modal Dialog Confirm**: I, as a guest, after triggering the _Prompt Modal Dialog_, want to Confirm the prompt;
+1. **Prompt Modal Dialog Follow Up**: I, as a guest, after confirming or dismissing a _Prompt_ _Modal Dialog_, want to see _Server_ and _Client_ logs reflecting my choice;
 
 ![Local Image](uml/useCases/promptModalDialog.png)
 
-## Inform Modal Dialog
-1. **Show Inform Modal Dialog**: I, as a guest, when at the _Landing Page_, want to clik on the _Inform_ button and observe a _Modal Dialog_ response, consisting of: i. a _Header_ informing me of an _Information_, e.g., _Information_, ii. a body with details about the required action, e.g, _You are not authorized to access this resource, please click `x` to dismiss_, and iii. No buttons on the _Footer_;
-1. **Inform Modal Dialog Dismiss**: I, as a guest, after triggering the Prompt Modal Dialog_, want dismiss the dialog without any additional webapp behavior;
-1. **Inform Modal Dialog Exit**: I, as a guest, after triggering the Inform Modal Dialog_, want exit the dialog without any additional webapp behavior;
-1. **Inform Modal Dialog Follow Up**: I, as a guest, after dismissing an _Information_ _Modal Dialog_, want to see _Server_ and _Client_ logs reflecing my choice;
+<sub>Prompt Modal Dialog Use Cases</sub>
 
-![Local Image](uml/useCases/informModalDialog.png)
-
-
-## Collect Modal Dialog
-1. **Show Collect Modal Dialog**: I, as a guest, when at the _Landing Page_, want to clik on the _Collect_ button and observe a _Modal Dialog_ response, consisting of: i. a _Header_ informing me of an _Data Collectoion_, e.g., _Please Provide Following Data_, ii. a body with a form including one input for the guest's age, and iii.  a _Footer_ with a _Primary_ button with the text _Submit_;
-1. **Collect Modal Dialog Dismiss**: I, as a guest, after triggering the Collect Modal Dialog_, want dismiss the dialog without any additional webapp behavior;
-1. **InfCollectorm Modal Dialog Exit**: I, as a guest, after triggering the Collect Modal Dialog_, want exit the dialog without any additional webapp behavior;
-**Collect Modal Dialog Input**: I, as a guest, after triggering the _Collect Modal Dialog_, want to input my age;
-1. **Collect Modal Dialog Follow Up**: I, as a guest, after submiting or dismissing an _Collect_ _Modal Dialog_, want to see _Server_ and _Client_ logs reflecing my choice;
-
-![Local Image](uml/useCases/collectModalDialog.png)
-
-## Implementation
-I'll mix sequence diagrams with text and software logic to explain the implementation.
-The best way me to describe it is thru a few architecture diagrams depicting the main technology elements supporting the use case
-
-### Setup Client/Server
-This amounts to building and launching he Go/Fiber HTTP Server, which I'll describe below, as well as launching the HTTP client--any browser will do.
-
-### Launch 
-Webapp
-
-![Local Image](uml/sequenceDiagrams/LaunchApplication.png)
-
-<sub>Launch Sequence Diagram</sub>
-
-In addition to addressing the _Setup_ use cases 1 and 2, this sequence diagram also shows how our Client and Server technology stack components collaborate to handle HTTP requests/responses, as well as how Fiber collaborates with its Template to parser a HTML fragment into the landing page.
-
-![Local Image](images/LandingPage.png)
-
-#### 
-
-<sub>Landing Page</sub>
-
-
-### Executing the Modal Dialog
-Now the Guest is ready to experiment with the browser triggered modal dialog:
-![Local Image](uml/ShowBrowserModal.png)
-
-<sub>Show Browser Modal Sequence Diagram</sub>
-
-- The Guest clicks on the Landing Page's `Browser` button; this button includes two configuration elements to route the request and to assist HTMX to find where and then render the Browser Modal dialog:
-  - **hx-get**="/browserModal": it routes the request
-  - **hx-target**="#htmx-browser-dialog-container">: it points to HTMX where to render the resulting Modal Dialog
-- The Client, with HTMX assistance, issues an "/browserModal" HTTP request to the Server;
-- The Server fills up a map with the arguments required for Modal Dialog--note that I'm referring to a generic instead of specific Modal Dialog; this means that I'll use the same dialog for the Browser and Server triggered Modal Dialogs;
-- The Server collaborates with the Template to render the Browser Modal Dialog, and to return it back to the Client, via the Server;
-
-![Local Image](images/BrowserModal.png)
-
-<sub>Browser Modal Dialog</sub>
-
-In addition to the Header and Body information, notice the `Exit`, being represented by an `x`, `Decline` and `Confirm` buttons.
-
-Also, if I attempt to click on the `Browser` and `Server` buttons in the `Landing Page`, in this case hidden, I will observe they have been disabled, and will continue to be so until I dismiss the `Browser Modal Dialog`.
-
-## Implementatioon
-### HTML Templates 
-#### Landing Page
-
-``` HTML
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!--  See Github for details -->
-</head>
-<body>
-    <!-- Browser initiated dialog placeholder -->
-    <div id="htmx-browser-dialog-container"></div>
-
-    <!-- Server initiated dialog placeholder -->
-    <div id="htmx-server-dialog-container" _="on dialog_event from body put detail.value into me"></div>
-
-    <!-- Markup to display the buttons to request Browser or Server Modal dialogs -->
-    <!-- My styling is very poor, eventually I'll pretty it up -->
-    <div class="card d-flex aligns-items-center justify-content-center text-center w-75 position-absolute top-50 start-50 translate-middle">
-        <div class="card-header">
-            <h1>Modal Dialog tests</h1>
-        </div>
-        <div class="card-body">
-            <button type="button" class="btn btn-primary" hx-get="/browserModal" hx-target="#htmx-browser-dialog-container">Browser</button>
-            <button type="button" class="btn btn-success" hx-get="/serverModal" hx-target="#htmx-server-dialog-container">Server</button>
-        </div>
-    </div>
-    <!-- See Githiub for deetals -->
-  </body>
-</html>
-```
-
-This markup has the following elements:
-- **head**: Where I configure the HTML and the CSS required by the webapp; I ommited them here for clarity sake;
-- **#htmx-browser-dialog-container**: The location where HTMX will load the Modal Dialog Box requested by the Clilent;
-- **#htmx-server-dialog-container**: The location where HTMX will load the Modal Dialog Box triggered by the Server;
-- **.card**: The location of the UX element that hosts the Browser and Server buttons the I use to trigger requests for Browser or Server Modal Dialogs;
-  -  **hx-get** I used it in both buttons to direct HTMX to triger the HTTP calls required to handle the Browese and Server Use Cases
-  - **hx-target**: I used it in both buttons to direct where HTMX is to place the server responses;
-  
-#### Broswer Modal Dialog
-
-``` HTML
-<dialog class="dialog   w-75" _="on load call htmx.process(me) then call me.showModal() end
-                          on dialog_close wait 10ms then remove me end
-                          on keydown if the event's key is 'Escape' then log `Clicked ESC key` remove me">
-    <div class="card ">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-md-10">
-                    <h5 class="modal-title">{{ .title }}</h5>
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="close" _="on click send dialog_close log 'Clicked Exit Button'"><span aria-hidden="true">&times;</span></button>
-                </div>
-            </div>
-        </div>
-        <div class="card-body">
-            <p class="card-text">{{ .body }}.</p>
-            <button type="button" class="btn btn-secondary" hx-get="/{{ .cancel_endpoint }}" hx-swap="none" _="on click send dialog_close log 'Clicked Seconday Button'">{{ .cancel_label }}</button>
-            <button type="button" class="btn btn-primary" hx-get="/{{ .confirm_endpoint }}"  hx-swap="none" _="on click send dialog_close log 'Clicked Primary Button'">{{ .confirm_label }}</button>
-        </div>
-    </div>
-</dialog>
-```
-
-Here is where things get really interesting, since we hightligh the power of HTMX and Hyperscript:
-- **.dialog**
-  - `on load call htmx.process(me) then call me.showModal() end` initializes Hyperscript and uses the HTML Dialog Box Element interface to open the dialog box, after HTMX placed its contents at the specified target locatioin;
-  - `on keydown if the event's key is 'Escape' then log `Clicked ESC key` remove me"`: When I click the `esc` key it logs it and removes the dialog;
-  - `on dialog_close wait 10ms then remove me end`: when Hyperscript detectes the `dialog_close` event it waits a bit and removes the dialog,
-  - Both buttons are configured to:
-    - use HTMX to trigger HTTP calls, both rendered during at the time the Modal Dialog Template is rendered;
-    - Log their usage in the Client's console
-
-### Go/Fiber logic Configuration
-The logic below configures the [GoFiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/)  to render my HTML templates, and [Fiber](https://gofiber.io/) to support my routes.
-
+### Prompt Modal Dialog Server
+I show only a fragment of the `main.go` file, where it resides, for simplicity sake
 ``` go
-package main
 
-import (
-    "github.com/gofiber/fiber/v2"
-    "github.com/gofiber/template/html/v2"
-)
+	// Route to handle the Client request for the server to execute the logic
+	// that supports a browser triggered Modal Dialog, prompting the Guest to 
+	// confirm an action
+	app.Get("/promptModal", func(c *fiber.Ctx) error {
+		// return c.SendString("Generate Browser Modal!")
+ 		log.Println("Prompt Modal Dialog: Route to prompt the Guest to confirm an action")
+        return c.Render("modalDialog", fiber.Map {
+            "title": "Action Required",
+            "body": "Please confirm you want to delete this record, or exit the dialog.",
+            "action_route": "promptModalConfirm",
+            "action_label": "Confirm",  
+			"action_class": "btn  btn-danger",  
 
-func main() {
-    // Set up the HTML template engine
-    engine := html.New("./views", ".html")
-
-    // Create a new Fiber app with the template engine
-    app := fiber.New(fiber.Config{
-        Views: engine,
-    })
-
-    // ...
-
-    app.Listen(":3000")
-}
- 
-```
-
-### Go/Fiber logic to handle Browser Triggered Client requests
-Next I add the routes to support our `Browser Modal Dialog` use cases:
-``` go
-    // ...
-
-    // Route to render the landing page
-    // Route to render the Landing Page
-    app.Get("/", func(c *fiber.Ctx) error {
-        log.Println("Route to render the Landing Page")
-        return c.Render("bsIndex", nil)
-    })
-
-    // Route to handle the Client request for the server to execute the logic
-    // that supports a browser triggered Modal Dialog rendering
-    app.Get("/browserModal", func(c *fiber.Ctx) error {
-        // return c.SendString("Generate Browser Modal!")
-        log.Println("Route to handle the Client request for the server to execute the logic that supports a browser triggered Modal Dialog rendering")
-        return c.Render("bsModalDialog", fiber.Map {
-            "title": "Browser Triggered Modal Title",
-            "body": "Browser Triggered Modal Body",
-            "confirm_endpoint": "browserModalAccept",
-            "confirm_label": "Accept",
-            "cancel_endpoint": "browserModalDecline",
-            "cancel_label": "Decline",       
             })
     })
 
-    // Route to render the Client Browser Modal Decline
-    app.Get("/browserModalDecline", func(c *fiber.Ctx) error {
-        message := "Route to handle the Guest clicking the Decline button on the Browser Modal Dialog"
-        log.Println(message)
-        return c.Status(fiber.StatusOK).SendString(message)
-    })
-
-    // Route to render the Client Browser Modal Accept
-    app.Get("/browserModalAccept", func(c *fiber.Ctx) error {
-        message := "Route to handle the Guest clicking the Accept button on the Browser Modal Dialog"
-        log.Println(message)
-        return c.Status(fiber.StatusOK).SendString(message)
-    })
-    
-    // ...
+	// Route to render the Guest Confirming the prompt by clicking the Confirm button
+	app.Get("/promptModalConfirm", func(c *fiber.Ctx) error {
+		message := "Prompt Modal Dialog: Route to handle the Guest confirming prompt by clicking the Confirm button on the Modal Dialog"
+		log.Println(message)
+		return c.Status(fiber.StatusOK).SendString(message)
+	})
 ```
+Notes, the commands:
+- `app.Get("/promptModal", func(c *fiber.Ctx) error { ... }` configures _Fiber_ to execute the the `func(c *fiber.Ctx) error { ... }`  whenever the _Client_ submits a request to `/promptModal`;
+- `log.Println("Prompt Modal Dialog: Route to prompt the Guest to confirm an action")` records the event in the server console;
+- `return c.Render("modalDialog", fiber.Map { ... }` asks Fiber to use the provided _fiber.map_ to render the _Prompt Modal Dialog_, and return the HTML to the Client; 
 
-Although one might conjure that the logic for the `/browserModalDecline` route is superflous, there are use cases where it is important to record the Guest's choice to decline a choice; hence, I elected to include it here for this reason and to offer me a solid proof the the request traveled the required round trip. I also `logged` the execution of all routes on the server on the Client console.
+Observe that:
+- the _fiber.map_ is slightly different for each dialog, leaving it to the [Go HTML Templates](https://pkg.go.dev/html/template) to use it render the  _Modal Dialog_ based on its content;
+- the Client's [HTMX](https://htmx.org/) will place rendered _HTML_ on the location configured by the button that triggered this event, `hx-target="#htmx-browser-dialog-container">`
+- See the notes and observations on the _Modal Dialog_ for the logic to close and remove the _Modal Dialog_ from the _DOM Tree_;
 
-![Local Image](images/BrowserModalDialogServerLogs.png)
+### Prompt Modal Dialog Client
+``` html
+<dialog class="dialog   w-75" _="on load call htmx.process(me) then call me.showModal() end
+                          on dialog_close wait 10ms then remove me end
+                          on keydown if the event's key is 'Escape' then log `Clicked ESC key` remove me">
+	<form>
+	<div class="card ">
+		<div class="card-header">
+			<div class="row">
+				<div class="col-md-10">
+					<h5 class="modal-title">{{ .title }}</h5>
+				</div>
+				<div class="col-md-2">
+					<button type="button" class="close" _="on click send dialog_close log 'Clicked Exit Button'"><span aria-hidden="true">&times;</span></button>
+				</div>
+			</div>
+		</div>
+		<div class="card-body">
+			<p class="card-text">{{ .body }}.</p>
+			{{if eq .action_label "Submit"}}
+					<div class="col-auto">
+						<label for="collectAge" class="col-form-label">Age</label>
+					</div>
+					<div class="col-auto">
+						<input type="number" id="collectAge" name="age" class="form-control">
+					</div>
+					<!-- <button type="submit" class="btn btn-primary"  hx-postt="/{{ .collect_endpoint }}">Submit</button> -->
+			{{end}}
+			<div class ="card-footer">
+				{{if eq .action_label "Confirm"}}
+					<button type="button" class="{{ .action_class}}" hx-get="/{{ .action_route }}"  hx-swap="none" _="on click send dialog_close log 'Clicked Primary Button'">{{ .action_label }}</button>
+				{{end}}
 
-<sub>Browser Modal Dialog Server Logs</sub>
+				{{if eq .action_label "Submit"}}
+					<button type="submit" class="{{ .action_class}}" hx-post="/{{ .action_route }}"  hx-swap="none" _="on click send dialog_close log 'Clicked Primary Button'">{{ .action_label }}</button>
+				{{end}}		
+			</div>
+		</div>
+	</div>
+	</form>
+</dialog>
+```
+Notes:
+- I used the [Bootstrap Card](https://getbootstrap.com/docs/5.3/components/card/), embedded in an [HTML Form](https://www.w3schools.com/tags/tag_form.asp); this enables me to place the buttons anywhere in the _Card_, ensuring that, if their type is `submit`, the Client will send their form inputs to the server;
+- All _Modal Dialogs_ have an Exit button, `x`, configured to issue a `dialog_close` event, which is captured by the [HyperScript](https://hyperscript.org/) logic in the `<dialog/>` element at the top, closing the _Modal Dialog_ and removing it from the _DOM Tree_;
+- the constructs of the type `{{ .<<name>>}}` assign values passed on the `c.Render` call thru the `fiber.map {...}`
+- the constructs of the type `{{if  ...}}` use `fiber.map {...}` parameters to fine tune the _Modal Dialog_; in this case, it add a `<button type="button" class="{{ .action_class}} ...` button, configured to use the `btn  btn-danger` class;
 
-Note that the third set of logs shows the Client request for a Browser Modal Dialog, but does not show the server action; this represents two uses cases, one where the Guest types the `ESC` key or clicks on the  Modal Dialog box `x` button.
+![Local Image](images/PromptModalDialog.png)
 
-![Local Image](images/BrowserModalDialogConsoleLogs.png)
+<sub>Prompt Modal Dialog</sub>
 
-<sub>Browser Modal Dialog Console Logs</sub>
+Notes:
+- The guest can dismiss the prompt modal dialog by clicking the `esc` keyboard key, or exit it by clicking the exit button at the top right, `x`;
+- The guest can confirm the operation by clicking the confirm button; in this case, the Client dismisses the _Modal Dialog_, issues an HTTP Request, `/promptModalConfirm` which will, cause the server to log it to is console, and return an OK result.
 
-Note we have logs for all Browser use cases
+![Local Image](images/PromptModalDialogServerLog.png)
+
+<sub>Prompt Modal Server Log</sub>
+
+- I can see the chat between Client and Server by opening up the Client Development Tools and inspecting network traffic:
+
+![Local Image](images/PromptModalDialogClientLog.png)
+
+<sub>Prompt Modal Client Log</sub>
 
 
-# Server Triggered Modal Dialogs
-I'll discuss the use cases, the architecture required to support them, and the implementation to support them.
 
-## Use Cases
-- ... omited the Browser Model Dialog Use Cases
-- **Launch Appplication**: I, as a guest, want to type the Server listening address in the Client address Bar to launch the demo application and see a `Landing Page` consisting of a UI element named `Modal Dialog Tests`, inclulding a button, `Browser`;
-- **Show Server Modal**: I, as a guest, when at the `Modal Dialog Tests` landing page, want to clik on the `Server` button and observe a response consting of a modal dialog including `Exit`, a `Decline`, and an `Accept` buttons;
-- **Dismiss Server Modal**:  I, as a guest, when at the Server Modal Dialog, want to clik the `Exit` button and dismiss the dialong without any additional system behavior;
-- **Decline Server Modal**:  I, as a guest, when at the Dialog Tests screen, want to clik the `Decline` button, receive a reply from the server indicating that I clicked the Decline button, and dismiss the dialong without any additional system behavior;
-- **Accept Server Modal**:  I, as a guest, when at the Dialog Tests screen, want to clik the `Accept` button, receive a reply from the server indicating I clicked the Accept button, and dismiss the dialong without any additional system behavior;
+## Inform Modal Dialog
+### Inform Modal Dialog Use Cases
+1. **Show Inform Modal Dialog**: I, as a guest, when at the _Landing Page_, want to clik on the _Inform_ button and observe a _Modal Dialog_ response, consisting of: i. a _Header_ informing me of an _Information_, e.g., _Information_, ii. a body with details about the required action, e.g, _You are not authorized to access this resource, please click `x` to _dismiss_, and iii. No buttons on the _Footer_;
+1. **Inform Modal Dialog Dismiss**: I, as a guest, after triggering the _Inform Modal Dialog_, want dismiss the dialog without any additional webapp behavior;
+1. **Inform Modal Dialog Exit**: I, as a guest, after triggering the _Inform Modal Dialog_, want exit the dialog without any additional webapp behavior;
+1. **Inform Modal Dialog Follow Up**: I, as a guest, after dismissing an _Information_ _Modal Dialog_, want to see _Server_ and _Client_ logs reflecting my choice;
 
-## Architecture
-I'll focus on the differences between the Browser and Server Model Diagrams logic
+![Local Image](uml/useCases/informModalDialog.png)
 
-### Setup Client/Server
-Same
+### Inform Modal Dialog Server
+I show only a fragment of the `main.go` file, where it resides, for simplicity sake
 
-### Launching the Application
-Same as for the `Browser Modal` use cases:
-
-### Show Server Modal
-Now the Guest is ready to experiment with the browser triggered modal dialog:
-![Local Image](uml/ServerModalDialogSequenceDiagram.png)
-
-<sub>Server Modal Dialog Sequence Diagram</sub>
-
-- The Guest clicks on the Landing Page's `Server` button; this button includes two configuration elements to route the request and to assist HTMX to find where and then render the Browser Modal dialog:
-- **hx-get**="/serverModal": it routes the request
-- **hx-target**="#htmx-server-dialog-container">: it points to HTMX where to render the resulting Modal Dialog
-- The Client, with HTMX assistance, issues an "/serverModal" HTTP request to the Server;
-- this is the heart of the difference between the two on the Server side
-  - The server detects the requirement to issue a Modal Dialog box; 
-  -  The server configures the HX-Trigger Response Header attribute; HTMX will identify it and trigger the event that shows the Modal Dialog;
-- The Server fills up a map with the arguments required for Modal Dialog--note that I'm referring to a generic instead of specific Modal Dialog; this is the same Modal Dialog Template as I used for the Browser Modal Dialog;
-- The Server collaborates with the Template to render the Server Modal Dialog, and to return it back to the Client, via the Server;
-
-![Local Image](images/ServerModal.png)
-
-<sub>Server Modal Dialog</sub>
-
-In addition to the Header and Body information, notice the `Exit`, being represented by an `x`, `Decline` and `Confirm` buttons.
-
-Also, if I attempt to click on the `Browser` and `Server` buttons in the `Landing Page`, in this case hidden, I will observe they have been disabled, and will continue to be so until I dismiss the `Browser Modal Dialog`.
-
-## Implementatioon
-### HTML Templates 
-#### Landing Page
-Same as for the Broweser Modal Dialog
-  
-#### Broswer Modal Dialog
-Same as for the Broweser Modal Dialog
-
-### Go/Fiber logic Configuration
-Same as for the Broweser Modal Dialog
-
-### Go/Fiber logic to handle Browser Triggered Client requests
-Next I add the routes to support our `Server Modal Dialog` use cases:
 ``` go
-    // ...
-
-    // Route to handle the Client request for the server to execute the logic
-    // that supports a server triggered Modal Dialog rendering
-    app.Get("/serverModal", func(c *fiber.Ctx) error {
-        // return c.SendString("Generate Server Modal!")
-        log.Println("Route to handle the Client request for the server to execute the logic that supports a server triggered Modal Dialog rendering")
+	app.Get("/informModal", func(c *fiber.Ctx) error {
+		// return c.SendString("Generate Server Modal!")
+		log.Println("Modal Dialog: Route to handle the server informing the Guest about a server state")
         data := fiber.Map {
-            "title": "Server Triggered Modal Title",
-            "body": "Server Triggered Modal Body",
-            "confirm_endpoint": "serverModalAccept",
-            "confirm_label": "Accept",
-            "cancel_endpoint": "serverModalDecline",
-            "cancel_label": "Decline",       
-            }
+            "title": "Authorization Error",
+            "body": "You are not authorized to perform this action.",
+            "action_route": "", //
+            "action_label": "",       
+ 			"action_class": "",  
+           }
 
         // Trigger a dialog_event in the server!
         c.Set("HX-Trigger", "dialog_event")
         return c.Render("modalDialog", data)
-    })
-
-    // Route to render the Client Browser Modal Decline
-    app.Get("/serverModalDecline", func(c *fiber.Ctx) error {
-        message := "Route to handle the Guest clicking the Decline button on the Server Modal Dialog"
-        log.Println(message)
-        return c.Status(fiber.StatusOK).SendString(message)
-    })
-
-    // Route to render the main page
-    app.Get("/serverModalAccept", func(c *fiber.Ctx) error {
-        message := "Route to handle the Guest clicking the Accept button on the Server Modal Dialog"
-        log.Println(message)
-        return c.Status(fiber.StatusOK).SendString(message)
-    })
-    
-    // ...
+	})
 ```
-Note that, in the `Server Modal Dialog` use case, the server configures the `Response Header` the the `HX-Trigger` attribute set to `dialog-event`, which is not the case for the Browser one. 
+Notes:
+- It has the same structure as the _Prompt_ _Modal Dialog_, except that it does not include a route to handle the guest's response, since it is in informational dialog.
+- Also, not how the `action-*` parameters are all blank; this enables the _Template_ parser to use it to avoid including unnecessary HTML elements;
 
-Although one might conjure that the logic for the `/browserModalDecline` route is superflous, there are use cases where it is important to record the Guest choice to decline a choice; hence, I elected to include it here for this reason and to offer me a solid proof the the request traveled the required round trip. I also `logged` the execution of all routes on the server on the Client console.
+### Inform Modal Dialog Client
+It uses the same _HTML_ fragment as the other two, except that the data in the `fiber.Map { ...}` and the _HTML Template_ will render a slight different HTML; in this case it has the header and body, but is does not have an guest action buttons;
 
-![Local Image](images/BrowserModalDialogServerLogs.png)
+![Local Image](images/InformModalDialog.png)
 
-<sub>Browser Modal Dialog Server Logs</sub>
+<sub>Inform Modal Client DiaLog</sub>
 
-Note that the third set of logs shows the Client request for a Browser Modal Dialog, but does not show the server action; this represents two uses cases, one where the Person types the `ESC` key or clicks on the  Modal Dialog box `x` button.
+## Collect Modal Dialog
+### Collect Modal Dialog Use Cases
+1. **Show Collect Modal Dialog**: I, as a guest, when at the _Landing Page_, want to click on the _Collect_ button and observe a _Modal Dialog_ response, consisting of: i. a _Header_ informing me of an _Data Collection_, e.g., _Please Provide Following Data_, ii. a body with a form including one input for the guest's age, and iii.  a _Footer_ with a _Primary_ button with the text _Submit_;
+1. **Collect Modal Dialog Dismiss**: I, as a guest, after triggering the _Collect Modal Dialog_, want dismiss the dialog without any additional webapp behavior;
+1. **InfCollectorm Modal Dialog Exit**: I, as a guest, after triggering the _Collect Modal Dialog_, want exit the dialog without any additional webapp behavior;
+**Collect Modal Dialog Input**: I, as a guest, after triggering the _Collect Modal Dialog_, want to input my age;
+1. **Collect Modal Dialog Follow Up**: I, as a guest, after submitting or dismissing an _Collect_ _Modal Dialog_, want to see _Server_ and _Client_ logs reflecting my choice;
 
-![Local Image](images/BrowserModalDialogConsoleLogs.png)
+![Local Image](uml/useCases/collectModalDialog.png)
 
-<sub>Browser Modal Dialog Console Logs</sub>
+<sub>Collect Modal Dialog Use Cases</sub>
 
-Note we have logs for all Browser use cases
+### Collect Modal Dialog Server
+I show only a fragment of the `main.go` file, where it resides, for simplicity sake
+
+``` go
+	app.Get("/collectModal", func(c *fiber.Ctx) error {
+		// return c.SendString("Generate Server Modal!")
+		log.Println("Modal Dialog: Route to handle the server requesting the Guest to provide data")
+        data := fiber.Map {
+            "title": "Guest Data Collection",
+            "body": "Please Provide the data below",
+            "action_route": "collectModalSubmit",
+            "action_label": "Submit",      
+ 			"action_class": "btn btn-primary",  
+           }
+
+        // Trigger a dialog_event in the server!
+        c.Set("HX-Trigger", "dialog_event")
+        return c.Render("modalDialog", data)
+	})
+
+	// Route to render the Client Browser Modal Decline
+	app.Post("/collectModalSubmit", func(c *fiber.Ctx) error {
+		age := c.FormValue("age")
+		message := "Collect: Route to handle age provided by guest: " + age
+		log.Println(message)
+		return c.Status(fiber.StatusOK).SendString(message)
+	})
+
+```
+- Notes:
+  - The `app.Get("/collectModal", func(c *fiber.Ctx) error {` setup logic is similar to the other two _Modal Dialogs_;
+  - The `c.Render("modalDialog", data)` is preceded by the ` c.Set("HX-Trigger", "dialog_event")` command, which is the key to trigger a _Server Modal Dialog_ in this architecture; as the _Client_ starts to process this _HTTP Response_; see the client for more details:
+
+![Local Image](images/CollectModalDialogServerLog.png)
+
+<sub>Collect Modal Server Log</sub>
+
+![Local Image](images/CollectModalDialog.png)
+
+<sub>Collect Modal Dialog</sub>
+
+### Collect Modal Dialog Client
+I'll repeat the _Modal Dialog_ here due the number of changes to support data collection:
+``` html
+<!-- Added Bootstrap Classes; still not clean -->
+<dialog class="dialog   w-75" _="on load call htmx.process(me) then call me.showModal() end
+                          on dialog_close wait 10ms then remove me end
+                          on keydown if the event's key is 'Escape' then log `Clicked ESC key` remove me">
+	<form>
+	<div class="card ">
+		<div class="card-header">
+			<div class="row">
+				<div class="col-md-10">
+					<h5 class="modal-title">{{ .title }}</h5>
+				</div>
+				<div class="col-md-2">
+					<button type="button" class="close" _="on click send dialog_close log 'Clicked Exit Button'"><span aria-hidden="true">&times;</span></button>
+				</div>
+			</div>
+		</div>
+		<div class="card-body">
+			<p class="card-text">{{ .body }}.</p>
+			{{if eq .action_label "Submit"}}
+					<div class="col-auto">
+						<label for="collectAge" class="col-form-label">Age</label>
+					</div>
+					<div class="col-auto">
+						<input type="number" id="collectAge" name="age" class="form-control">
+					</div>
+					<!-- <button type="submit" class="btn btn-primary"  hx-postt="/{{ .collect_endpoint }}">Submit</button> -->
+			{{end}}
+			<div class ="card-footer">
+				{{if eq .action_label "Confirm"}}
+					<button type="button" class="{{ .action_class}}" hx-get="/{{ .action_route }}"  hx-swap="none" _="on click send dialog_close log 'Clicked Primary Button'">{{ .action_label }}</button>
+				{{end}}
+
+				{{if eq .action_label "Submit"}}
+					<button type="submit" class="{{ .action_class}}" hx-post="/{{ .action_route }}"  hx-swap="none" _="on click send dialog_close log 'Clicked Primary Button'">{{ .action_label }}</button>
+				{{end}}		
+			</div>
+		</div>
+	</div>
+	</form>
+</dialog>
+```
+- Notes:
+ - When handling the _HTTP Response_
+    - _HTMX_ recognizes the `HX-Trigger` parameter and issues the `dialog_event` event;
+    - _Hyperscript_, configured to recognize this event on _Landing Page_ `<div id="htmx-server-dialog-container" _="on dialog_event from body put detail.value into me"></div>` statement, grabs the HTML response and inserts on the DOM Tree, underneath `<div id="htmx-server-dialog-container"`
+  - The logic controlled by the `action_label`, `Submit` in this case, directs _HTML Template_ to include the HTML fragment used to capture the guest's age;
+  - The `button` is of a `submit / primary` type; the submit is required to instruct. the _Broswer_ to include the named form input elements in the _HTTP Request_;
+  - Once the guest types their age and clicks on the submit button, the _Browser_ issues an _HTTP Post **Request**_ to the _Server_, which is handled by the `app.Post("/collectModalSubmit", func(c *fiber.Ctx) error { ... }`; observer that:
+    - The HTTP Post Handler extracts the age and, logs a messsage including the returned age, and sends the same message to the _Client_
+
+
+![Local Image](images/CollectModalDialog42.png)
+
+<sub>Collect Modal Dialog, with the guest reply</sub>
+
+
+![Local Image](images/CollectModalDialog42ServerLog.png)
+
+<sub>Collect Modal Dialog Server Log</sub>
+
+![Local Image](images/CollectModalDialog42ClientLog.png)
+
+<sub>Collect Modal Dialog Client Log</sub>
+
+# Conclusion
+My goal was to learn how to implement server triggered modal dialogs using the technology stack I selected to build my mobile first SaaS ERP. 
+
+I found an excellent example in the article [Two ways to build HTML dialogs using HTMX and HyperScript](https://medium.com/@martin.mohnhaupt/two-ways-to-build-html-dialogs-using-htmx-and-hyperscript-5f5eefb13c4c) by Martin Mohnhaupt, add adapted it my technology stack.
+
+Martin provides two examples, one on how to trigger a _Server Modal Dialog_ and another  on how to trigger a Browser Modal Dialog_. In this article I expanded Martin's work to have two distinct _Server Modal Dialogs_, one providing server state information to the guest, and the other collecting data from the guest.
