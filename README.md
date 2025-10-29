@@ -61,13 +61,11 @@ This amounts to building and launching he Go/Fiber HTTP Server, which I'll descr
 
 ### Launching the Application
 
-![Local Image](uml/LaunchApplication.png)
+![Local Image](uml/sequenceDiagrams/LaunchApplication.png)
 
 <sub>Launch Sequence Diagram</sub>
 
-- The Guest types the application URL in their Client's address bar;
-- The Client issues a "/" route request;
-- The Server collaborates with the Template to render the landing page, and to return it back to the client, via the Server;
+In addition to addressing the _Setup_ use cases 1 and 2, it also shows how our Client and Server technology stack components collaborate to handle HTTP requests/responses, as well as how Fiber collaborates with it Template to render a HTML fragment into the landing page.
 
 ![Local Image](images/LandingPage.png)
 

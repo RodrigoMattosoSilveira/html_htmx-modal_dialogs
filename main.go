@@ -23,47 +23,59 @@ func main() {
 	})
 
 	// Route to handle the Client request for the server to execute the logic
-	// that supports a browser triggered Modal Dialog rendering
-	app.Get("/browserModal", func(c *fiber.Ctx) error {
+	// that supports a browser triggered Modal Dialog, prompting the Guest to 
+	// confirm an action
+	app.Get("/promptModal", func(c *fiber.Ctx) error {
 		// return c.SendString("Generate Browser Modal!")
- 		log.Println("Route to handle the Client request for the server to execute the logic that supports a browser triggered Modal Dialog rendering")
+ 		log.Println("Prompt Modal Dialog: Route to prompt the Guest to confirm an action")
         return c.Render("modalDialog", fiber.Map {
-            "title": "Browser Triggered Modal Title",
-            "body": "Browser Triggered Modal Body",
-            "confirm_endpoint": "browserModalAccept",
-            "confirm_label": "Accept",
-            "cancel_endpoint": "browserModalDecline",
-            "cancel_label": "Decline",       
+            "title": "Action Required",
+            "body": "Please confirm you want to delete this record, or exit the dialog.",
+            "action_route": "promptModalConfirm",
+            "action_label": "Confirm",  
+			"action_class": "btn  btn-danger",  
+
             })
     })
 
-	// Route to render the Client Browser Modal Decline
-	app.Get("/browserModalDecline", func(c *fiber.Ctx) error {
-		message := "Route to handle the Guest clicking the Decline button on the Browser Modal Dialog"
-		log.Println(message)
-		return c.Status(fiber.StatusOK).SendString(message)
-	})
-
-	// Route to render the Client Browser Modal Accept
-	app.Get("/browserModalAccept", func(c *fiber.Ctx) error {
-		message := "Route to handle the Guest clicking the Accept button on the Browser Modal Dialog"
+	// Route to render the Guest Confirming the prompt by clicking the Confirm button
+	app.Get("/promptModalConfirm", func(c *fiber.Ctx) error {
+		message := "Prompt Modal Dialog: Route to handle the Guest confirming prompt by clicking the Confirm button on the Modal Dialog"
 		log.Println(message)
 		return c.Status(fiber.StatusOK).SendString(message)
 	})
 
 	// Route to handle the Client request for the server to execute the logic
-	// that supports a server triggered Modal Dialog rendering
-	app.Get("/serverModal", func(c *fiber.Ctx) error {
+	// that supports a server triggered Modal Dialog, informing the Guest about
+	// a server state
+	app.Get("/informModal", func(c *fiber.Ctx) error {
 		// return c.SendString("Generate Server Modal!")
-		log.Println("Route to handle the Client request for the server to execute the logic that supports a server triggered Modal Dialog rendering")
+		log.Println("Modal Dialog: Route to handle the server informing the Guest about a server state")
         data := fiber.Map {
-            "title": "Server Triggered Modal Title",
-            "body": "Server Triggered Modal Body",
-            "confirm_endpoint": "serverModalAccept",
-            "confirm_label": "Accept",
-            "cancel_endpoint": "serverModalDecline",
-            "cancel_label": "Decline",       
-            }
+            "title": "Authorization Error",
+            "body": "You are not authorized to perform this action.",
+            "action_route": "", //
+            "action_label": "",       
+ 			"action_class": "",  
+           }
+
+        // Trigger a dialog_event in the server!
+        c.Set("HX-Trigger", "dialog_event")
+        return c.Render("modalDialog", data)
+	})
+
+	// Route to handle the Client request for the server to execute the logic
+	// that supports collecting data, the guest's age in this case;
+	app.Get("/collectModal", func(c *fiber.Ctx) error {
+		// return c.SendString("Generate Server Modal!")
+		log.Println("Modal Dialog: Route to handle the server requesting the Guest to provide data")
+        data := fiber.Map {
+            "title": "Guest Data Collection",
+            "body": "Please Provide the data below",
+            "action_route": "collectModalSubmit",
+            "action_label": "Submit",      
+ 			"action_class": "btn btn-primary",  
+           }
 
         // Trigger a dialog_event in the server!
         c.Set("HX-Trigger", "dialog_event")
@@ -71,15 +83,9 @@ func main() {
 	})
 
 	// Route to render the Client Browser Modal Decline
-	app.Get("/serverModalDecline", func(c *fiber.Ctx) error {
-		message := "Route to handle the Guest clicking the Decline button on the Server Modal Dialog"
-		log.Println(message)
-		return c.Status(fiber.StatusOK).SendString(message)
-	})
-
-	// Route to render the main page
-	app.Get("/serverModalAccept", func(c *fiber.Ctx) error {
-		message := "Route to handle the Guest clicking the Accept button on the Server Modal Dialog"
+	app.Post("/collectModalSubmit", func(c *fiber.Ctx) error {
+		age := c.FormValue("age")
+		message := "Collect: Route to handle age provided by guest: " + age
 		log.Println(message)
 		return c.Status(fiber.StatusOK).SendString(message)
 	})
