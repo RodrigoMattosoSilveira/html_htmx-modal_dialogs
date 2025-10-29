@@ -31,7 +31,7 @@ The _Landing Page_ includes 3 buttons:  `Prompt`, `Inform`, and `Collect`; all t
 The _Prompt_ button starts a _Modal Dialog_ which requires the guest to either okay or cancel an operation. When the guest triggers the _Inform_ button, a _Modal Dialog_ informs them about the server state, and they need to do nothing else. The _Collect_ button triggers a _Modal Dialog_ asking the guest to provide a data element, or dismiss the dialog; this is a more complex _Server_ _Modal Dialog_.
 
 # Implementation
-I'll describe the webapp implementation as follows, including sequence diagrams:
+I'll describe the webapp implementation in four section, as follows, including use case and sequence diagrams:
 - Launch webapp
 - Prompt Modal Dialog
 - Inform Modal Dialog
