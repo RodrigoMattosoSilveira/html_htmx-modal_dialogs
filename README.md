@@ -24,7 +24,7 @@ You can find the full implementation at [this repo](https://github.com/RodrigoMa
 # A Word About the Webapp Demo
 Web applications using complex Client technology stacks, such as [React](https://react.dev/) and its vast constellation of addons, can handle the logic to trigger, display, and manage _Modal Dialogs_  with minimal Server interaction. 
 
-This _webapp_ uses a significantly simpler Client technology stack, [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree, with a limited use of Javascript. Instead of relying on JSON payload and complex logic to express the User Experience, it relys on fully rendered HTL 
+This _webapp_ uses a significantly simpler Client technology stack, [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree, with a limited use of Javascript. Instead of relying on JSON payload and complex logic to express the User Experience, it relys on fully rendered HTML. 
 
 The _Landing Page_ includes 3 buttons:  `Prompt`, `Inform`, and `Collect`. All three  share similar logic where the _Client_ requests _HTML_ from the Server, which independent of the _Modal Dialogs’_ own logic. 
 
