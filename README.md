@@ -1,29 +1,34 @@
 # Abstract and Acknowledgement
-I decided to build a mobile-first SaaS enterprise resource planning application. The mobile-first requirement imposed two constraints. One, I'm not inclined to build at least two native applications, or spend money with frameworks that support it. Second, a webapp running on a phone must be stingy with resource utilization to prevent performance degradation.
+I built a mobile-first SaaS enterprise resource planning application. The mobile-first requirement imposed two constraints. One, I’m not inclined to build at least two native applications, or spend money with frameworks that support it. Second, a webapp running on a phone must be stingy with resource utilization to prevent performance degradation.
 
-This lead me to architect a solution with a minimal Browser footprint, using [Go](https://go.dev/) as the server engine and [Fiber](https://gofiber.io/) as the HTTP server. This led me to leveraging [Go HTML Templates](https://pkg.go.dev/html/template) in conjunction with the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) to collaborate with [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client.
+This lead me to architect a solution with a minimal Browser footprint, using [Go](https://go.dev/) as the server engine and [Fiber](https://gofiber.io/) as the HTTP server. This led me to leveraging [Go HTML Templates](https://pkg.go.dev/html/template) with the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) to collaborate with [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client.
 
-Shortly into my work, I was challenged on how to implement `Modal Dialogs` issued by the server, as for instance, to inform the guest they do not have the authorization to access a resource. The excellent article [Two ways to build HTML dialogs using HTMX and HyperScript](https://medium.com/@martin.mohnhaupt/two-ways-to-build-html-dialogs-using-htmx-and-hyperscript-5f5eefb13c4c) by [Martin Mohnhaupt](https://medium.com/@martin.mohnhaupt) has been instrumental to aid me in thinking about and implementing `Modal Dialogs` in my webapp. 
+Early in my work, someone challenged me to implement ‘Modal Dialogs’ issued by the server, such as those that would inform a guest they did not have authorization to access a resource. The excellent article [Two ways to build HTML dialogs using HTMX and HyperScript](https://medium.com/@martin.mohnhaupt/two-ways-to-build-html-dialogs-using-htmx-and-hyperscript-5f5eefb13c4c) by [Martin Mohnhaupt](https://medium.com/@martin.mohnhaupt) has been instrumental to aid me in thinking about and implementing `Modal Dialogs` in my webapp. 
 
 This repository introduces two different methods to display `Modal Dialogs`, `Browser Modal Dialog` and `Server Modal Dialog`. A _Modal Dialog_ is a pop-up window that appears on top of the current browser page, requiring user interaction before the user can return to the main content. It is commonly used to request confirmation to proceed with a destructive operation, notify the user of a relevant application state, or collect required information from the user. We use _Browser Modal Dialogs_ to prompt the user to confirm an action, such as deleting a record, and _Server Modal Dialogs_ to either inform the user about the result of an operation, like lack of authorization for access a resource-- or to collect additional data, like a phone number.
 
-I will demonstrate Martin's approach, refactored to suit my requirements, using a simple web application with a technology stack consisting of  [Go](https://go.dev/), [Fiber](https://gofiber.io/),  and the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) on the Server, and [Bootstrap 5](https://getbootstrap.com/) , [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client. This technology stack requires the Server to serve HTML, whereas other stacks use JSON requiring more complex technology stack on the Client; it also provides the software engineer with strategies to define precise places in the `DOM Tree`, as well as to decorate some of the DOM Tree elements with event handling instructions. 
-Note that:
-- I'll use the term `Server`, to refer to the `Go/Fiber` HTTP server;
-- I'll use the term `Template`,to refer to the `GoFiber Template` engine;
-- I'll use the term `Client`, to refer to the [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) logic to handle the Templates returned by the _Server_ and hostedf by any **modern** browser;
-- I'll use the term `webapp`, to refer to the web application consisting of the _Client_ and _Server_ mentioned above;
+I will use Martin’s approach, refactored to suit my requirements, using a simple web application with a technology stack consisting of  [Go](https://go.dev/), [Fiber](https://gofiber.io/),  and the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) on the Server, and [Bootstrap 5](https://getbootstrap.com/) , [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client. This technology stack requires the Server to serve HTML, whereas other stacks use JSON requiring more complex technology stack on the Client; it also provides the software engineer with strategies to define precise places in the `DOM Tree`, as well as to decorate some of the DOM Tree elements with event handling instructions. 
 
-You can find the full implemention at [this repo](https://github.com/RodrigoMattosoSilveira/html_htmx-modal_dialogs) on [my github account](https://github.com/RodrigoMattosoSilveira).
+Note that:
+
+- I’ll use the term `Server`, to refer to the `Go/Fiber` HTTP server;
+
+- I’ll use the term `Template`,to refer to the `GoFiber Template` engine;
+
+- I’ll use the term `Client`, to refer to the [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) logic to handle the Templates returned by the _Server_ and hosted by any **modern** browser;
+
+- I’ll use the term `webapp`, to refer to the web application comprising the _Client_ and _Server_ mentioned above;
+
+You can find the full implementation at [this repo](https://github.com/RodrigoMattosoSilveira/html_htmx-modal_dialogs) on [my GitHub account](https://github.com/RodrigoMattosoSilveira).
 
 # A Word About the Webapp Demo
 Web applications using complex Client technology stacks, such as [React](https://react.dev/) and its vast constellation of addons, can handle the logic to trigger, display, and manage _Modal Dialogs_  with minimal Server interaction. 
 
 This _webapp_ uses a significantly simpler Client technology stack, [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree, with a limited use of Javascript. Instead of relying on JSON payload and complex logic to express the User Experience, it relys on fully rendered HTL 
 
-The _Landing Page_ includes 3 buttons,  `Prompt`, `Inform`, and `Collect`. Note that all 3 include logic requiring the _Client_ to request the Server to provide their _HTML_, and that this logic is decoupled of the _Modal Dialogs_ in of themselves. 
+The _Landing Page_ includes 3 buttons:  `Prompt`, `Inform`, and `Collect`. All three  share similar logic where the _Client_ requests _HTML_ from the Server, which independent of the _Modal Dialogs’_ own logic. 
 
-The _Prompt_ button triggers a _Modal Dialog_ requiring a guest action to confirm an operation, or dismiss the dialog; this is a _Browser_ _Modal Dialog_. The _Inform_ button triggers a _Modal Dialog_ informing the guest about a Server state, without requiring any additional action other than dismissing the dialog; this is a _Server_ _Modal Dialog_. The _Collect_ button triggers a _Modal Dialog_ asking the guest to provide a data element, or dismiss the dialog; this is a more complex _Server_ _Modal Dialog_.
+The _Prompt_ button starts a _Modal Dialog_ which requires the guest to either okay or cancel an operation. When the guest triggers the _Inform_ button, a _Modal Dialog_ informs them about the server state, and they need to do nothing else. The _Collect_ button triggers a _Modal Dialog_ asking the guest to provide a data element, or dismiss the dialog; this is a more complex _Server_ _Modal Dialog_.
 
 # Implementation
 I'll describe the webapp implementation as follows, including sequence diagrams:
