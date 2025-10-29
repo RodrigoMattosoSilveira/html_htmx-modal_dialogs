@@ -1,30 +1,131 @@
-# Abstract
+# Abstract and Acknowlegemens
+I decided to build a mobile-first SaaS enterprise resourse planning application. The mobile-first requirement imposed two constraints. One, I'm not inclined to build at least two native applications, or spend money with frameworks that support it. Second, a webapp running on a phone must be stingy with resource utilization to prevent performance degradation.
+
+This lead me to architect a solution with a minimal Browser footprint, using [Go](https://go.dev/) as the server engine and [Fiber](https://gofiber.io/) as the HTTP server. This led me to leveraging [Go HTML Templates](https://pkg.go.dev/html/template) in conjunction with the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) to collaborate with [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client.
+
+Shortly into my work, I was challenged how to implement `Modal Dialogs` issued by the server, as for instance, to inform the guest they do not have the authortizarion to access a resource. The excellent article [Two ways to build HTML dialogs using HTMX and HyperScript](https://medium.com/@martin.mohnhaupt/two-ways-to-build-html-dialogs-using-htmx-and-hyperscript-5f5eefb13c4c) by [Martin Mohnhaupt](https://medium.com/@martin.mohnhaupt) has been instrumental to aid me in thinking about and implementing `Modal Dialogs` in my webapp. 
+
 This repository introduces two different methods to display `Modal Dialogs`, `Browser Modal Dialog` and `Server Modal Dialog`. A _Modal Dialog_ is a pop-up window that appears on top of the current browser page, requiring user interaction before the user can return to the main content. It is commonly used to request confirmation to proceed with a destructive opperation, notify the user of a relevant application state, or collect required information from the user. We use _Browser Modal Dialogs_ to prompt the user to confirm an action, such as deleting a record, and _Server Modal Dialogs_ to either inform the user about the result of an operation, like lack of authorization for access a resource-- or to collected addition data, like a phone number.
 
-We will demonstrate our approach using a simple web applications with a technology stack consisting of  [Go](https://go.dev/), [Fiber](https://gofiber.io/),  and the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) on the Server, and [Bootstrap 5](https://getbootstrap.com/) , [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client. This technology stack requires the Server to serve HTML, whereas other stacks use JSON requiring more complex technology stack on the Client. Deceivingly, both examples
-
+I will demonstrate Martin's approach, refactored to suit my requirements, using a simple web application with a technology stack consisting of  [Go](https://go.dev/), [Fiber](https://gofiber.io/),  and the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) on the Server, and [Bootstrap 5](https://getbootstrap.com/) , [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client. This technology stack requires the Server to serve HTML, whereas other stacks use JSON requiring more complex technology stack on the Client; it also provides the software engineer with strategist to define precise places in the `DOM Tree`, as well as to decorate some of the DOM Tree elements with event handling instructions. 
 Note that:
 - I'll use the term `Server`, to refer to the `Go/Fiber` HTTP server;
 - I'll use the term `Template`,to refer to the `GoFiber Template` engine;
 - I'll use the term `Client`, to refer to the [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) logic to handle the Templates returned by the _Server_ and hostedf by any **modern** browser;
 - I'll use the term `webapp`, to refer to the web application consisting of the _Client_ and _Server_ mentioned above;
 
-# A Word About our Webapp Demo
+You can find the full implemention at [this repo](https://github.com/RodrigoMattosoSilveira/html_htmx-modal_dialogs) on [my github account](https://github.com/RodrigoMattosoSilveira).
+
+# A Word About the Webapp Demo
 Web applications using complex Client technology stacks, such as [React](https://react.dev/) and its vast constellation of addons, can handle the logic to triger, display, and manage _Modal Dialogs_  with minimal Server interaction. 
 
-Our _webapp_ uses a significantly simpler Client technology stack, [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree, with a limited use of Javascript. Instead of relying on JSON payload and complex logic to express the User Experience, it relys on fully rendered HTL 
+This _webapp_ uses a significantly simpler Client technology stack, [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree, with a limited use of Javascript. Instead of relying on JSON payload and complex logic to express the User Experience, it relys on fully rendered HTL 
 
-The _Landing Page_ includes 3 buttons,  `Prompt`, `Inform`, and `Collect`. Note that all 3 include logic requiring the Client to request the Server to provide their HTML, and that this logic is decoupled of the _Modal Dialogs_ in of themselves. 
+The _Landing Page_ includes 3 buttons,  `Prompt`, `Inform`, and `Collect`. Note that all 3 include logic requiring the _Client_ to request the Server to provide their _HTML_, and that this logic is decoupled of the _Modal Dialogs_ in of themselves. 
 
 The _Prompt_ buttton triggers a _Modal Dialog_ requiring a guest action to confirm an operation, or dismiss the dialog; this is a _Browser_ _Modal Dialog_. The _Inform_ buttton triggers a _Modal Dialog_ informing the guest about a Server state, without requiring any addition action other than dismiss the dialog; this is a _Server_ _Modal Dialog_. The _Collect_ buttton triggers a _Modal Dialog_ asking the guest to provide a data element, or dismiss the dialog; this is a more complex _Server_ _Modal Dialog_.
 
 # Use Cases
-A use case is a detailed description of how a user interacts with a system to achieve a specific goal. Although ouors are relatively simple, I included them here since I wrote and used them to implement the webapp, and thought they would help me explaning the webapp. Following are the use cases for our webapp, which I'll refer throughout this document:
-## Setup
+A use case is a detailed description of how a user interacts with a system to achieve a specific goal. Although ours are relatively simple, I included them here since I wrote and used them to implement the webapp, and thought they would help me explaning the webapp. Following are the use cases for our webapp, including the logic I used to implemenet them:
+## Launch Webapp
 1. **Setup Server**: I, as a guest, when I launch the _Server_, I want to see the _Fiber_ log incating that its ready to handle _HTTP_ requests;
 1. **Setup Client**: I, as a guest, when I launch the _Client_, after typing the server access URL, want to see the _Landing Page_ consisting of a UI element named `Modal Dialog Tests`, inclulding two buttons, `Prompt`, `Inform`, and `Collect`;
 
-![Local Image](uml/useCases/setup.png)
+![Local Image](uml/useCases/webappLaunch.png)
+
+<sub>Launch Webapp</sub>
+
+### The Server Logic
+``` go
+package main
+
+import (
+	"log"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/template/html/v2"
+)
+
+func main() {
+	// Set up the HTML template engine
+	engine := html.New("./views", ".html")
+
+	// Create a new Fiber app with the template engine
+	app := fiber.New(fiber.Config{
+		Views: engine,
+	})
+
+	// Route to render the Landing Page
+	app.Get("/", func(c *fiber.Ctx) error {
+		log.Println("Route to render the Landing Page")
+		return c.Render("index", nil)
+	})
+
+	// Route Management logic omitted ... 
+
+	// Start the server
+	app.Listen(":3000")
+}
+```
+Notes:
+- The command `engine := html.New("./views", ".html")` configures the `GO HTML Template` engine to look for its `HTML fragments` in the `./views` folder and using the `.html` extention;
+- The command `	app := fiber.New(fiber.Confi{Views: engine,})` configures `Fiber` as the webapp's HTTP server using its Template engine;
+- The following command:
+  - Sets up the `Landing Page` route to `/`;
+  - Logs the event;
+  - Renders the `Landing Page` using the `./views/index.html` HTML fragment;
+  - Returns the `Landing Page` to the Client;
+``` go
+	app.Get("/", func(c *fiber.Ctx) error {
+		log.Println("Route to render the Landing Page")
+		return c.Render("index", nil)
+	})
+```
+- The command `	app.Listen(":3000")` configures the HTTP Server, Fiber, to listen on port 3000;
+- 
+### The Landing Page HTML Fragment
+I'll focus on the markup required to render the Landing Page, ommiting everything else, given our focus on the Modal Dialogs and the logic to publish, use, and handle them:
+``` html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <!-- Ommited CSS, see github for details-->
+</head>
+<body>
+    <!-- Browser initiated dialog placeholder -->
+    <div id="htmx-browser-dialog-container"></div>
+
+    <!-- Server initiated dialog placeholder -->
+    <div id="htmx-server-dialog-container" _="on dialog_event from body put detail.value into me"></div>
+    
+	<!--div class="d-flex aligns-items-center justify-content-center card text-center w-75 mx-auto"></div-->
+	<div class="card d-flex aligns-items-center justify-content-centertext-center w-75 position-absolute top-50 start-50 translate-middle">
+    	<div class="card-header">
+   			<h1>Modal Dialog tests</h1>
+		</div>
+		<div class="card-body">
+			<button type="button" class="btn btn-danger" hx-get="/promptModal" hx-target="#htmx-browser-dialog-container">Prompt</button>
+			<button type="button" class="btn btn-warning" hx-get="/informModal" hx-target="#htmx-browser-dialog-container">Inform</button>
+			<button type="button" class="btn btn-success" hx-get="/collectModal" hx-target="#htmx-server-dialog-container">Collect</button>
+		</div>
+	</div>
+	<!--  Omitted scrips, see github for details -->
+  </body>
+</html>
+```
+Notes:
+- The architure requires that I use two different landing regions for the _Modal Dialogs_, depending on their nature (it took me a long timne to find an example that made a working distinction). I use ` <div id="htmx-browser-dialog-container">` to host _Browser Modal Dialogs_ and ` <div id="htmx-server-dialog-container">` to host _Server Modal Dialogs_; the the discussion below for the strategy to place them at these elements;
+- I used a [Bootstrap Card](https://getbootstrap.com/docs/5.3/components/card/) to help build this responsive user experience expeditiously;
+- The heart of the User Experience logic reside in the elment `<div class="card-body">`, consisting of three buttons:
+  - ` hx-get="/promptModal"` - Triggers the _Server_ to render a _Browser Modal Dialog_, prompting the guest to either proceed or abandon a dangerous operation;
+  - ` hx-get="/informModal"` - Triggers the _Server_ to render a _Server Modal Dialog_, informing the guest about a system state, like an attempt on the guest's part to access an unauthorized resource;
+  -   - ` hx-get="/collectModal"` - Triggers the _Server_ to render a _Server Modal Dialog_, prompting the guest to provide data;
+  -   
+### The Rendered Langing Page
+
+![Local Image](images/LandingPage.png)
+
+<sub>Landing Page</sub>
 
 ## Prompt Modal Dialog
 1. **Show Prompt Modal Dialog**: I, as a guest, when at the _Landing Page_, want to clik on the _Prompt_ button and observe a _Modal Dialog_ response, consisting of: i. a _Header_ informing me of an _Action Required_, e.g., _Action Required_, ii. a body with details about the required action, e.g, _Please confirm your choice to DELETE this record, or click x to dismiss_, and iii. a _Footer_ with a _Primary / Danger_ button with the text _Confirm_;
@@ -53,26 +154,30 @@ A use case is a detailed description of how a user interacts with a system to ac
 
 ![Local Image](uml/useCases/collectModalDialog.png)
 
-## Architecture
+## Implementation
+I'll mix sequence diagrams with text and software logic to explain the implementation.
 The best way me to describe it is thru a few architecture diagrams depicting the main technology elements supporting the use case
 
 ### Setup Client/Server
-This amounts to building and launching he Go/Fiber HTTP Server, which I'll describe below, as well as launching the HTTP client--any browser will do;
+This amounts to building and launching he Go/Fiber HTTP Server, which I'll describe below, as well as launching the HTTP client--any browser will do.
 
-### Launching the Application
+### Launch 
+Webapp
 
 ![Local Image](uml/sequenceDiagrams/LaunchApplication.png)
 
 <sub>Launch Sequence Diagram</sub>
 
-In addition to addressing the _Setup_ use cases 1 and 2, it also shows how our Client and Server technology stack components collaborate to handle HTTP requests/responses, as well as how Fiber collaborates with it Template to render a HTML fragment into the landing page.
+In addition to addressing the _Setup_ use cases 1 and 2, this sequence diagram also shows how our Client and Server technology stack components collaborate to handle HTTP requests/responses, as well as how Fiber collaborates with its Template to parser a HTML fragment into the landing page.
 
 ![Local Image](images/LandingPage.png)
+
+#### 
 
 <sub>Landing Page</sub>
 
 
-### Show Browser Modal
+### Executing the Modal Dialog
 Now the Guest is ready to experiment with the browser triggered modal dialog:
 ![Local Image](uml/ShowBrowserModal.png)
 
