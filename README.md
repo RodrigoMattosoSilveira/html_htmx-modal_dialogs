@@ -26,7 +26,7 @@ Web applications using complex Client technology stacks, such as [React](https:/
 
 This _webapp_ uses a significantly simpler Client technology stack, [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree, with a limited use of Javascript. Instead of relying on JSON payload and complex logic to express the User Experience, it relys on fully rendered HTML. 
 
-The _Landing Page_ includes 3 buttons:  `Prompt`, `Inform`, and `Collect`. All three  share similar logic where the _Client_ requests _HTML_ from the Server, which independent of the _Modal Dialogs’_ own logic. 
+The _Landing Page_ includes 3 buttons:  `Prompt`, `Inform`, and `Collect`; all three  share similar logic where the _Client_ requests _HTML_ from the Server, which is independent and different of the _Modal Dialogs’_ own logic. 
 
 The _Prompt_ button starts a _Modal Dialog_ which requires the guest to either okay or cancel an operation. When the guest triggers the _Inform_ button, a _Modal Dialog_ informs them about the server state, and they need to do nothing else. The _Collect_ button triggers a _Modal Dialog_ asking the guest to provide a data element, or dismiss the dialog; this is a more complex _Server_ _Modal Dialog_.
 
