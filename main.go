@@ -60,7 +60,9 @@ func main() {
            }
 
         // Trigger a dialog_event in the server!
-        c.Set("HX-Trigger", "dialog_event")
+        c.Set("HX-Retarget", "#htmx-server-dialog-container")
+		c.Set("HX-Reswap", "beforeend")
+		c.Set("HX-Trigger", "dialog_event")
         return c.Render("modalDialog", data)
 	})
 

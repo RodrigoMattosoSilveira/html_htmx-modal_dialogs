@@ -1,6 +1,6 @@
 <!-- Added Bootstrap Classes; still not clean -->
 <dialog class="dialog   w-75" _="on load call htmx.process(me) then call me.showModal() end
-                          on dialog_close wait 10ms then remove me end
+                          on dialog_close from document wait 10ms then remove me end
                           on keydown if the event's key is 'Escape' then log `Clicked ESC key` remove me">
 	<form>
 	<div class="card ">
