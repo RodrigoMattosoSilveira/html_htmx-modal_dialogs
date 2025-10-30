@@ -1,34 +1,35 @@
 # Abstract and Acknowledgement
 I built a mobile-first SaaS enterprise resource planning application. The mobile-first requirement imposed two constraints. One, I’m not inclined to build at least two native applications, or spend money with frameworks that support it. Second, a webapp running on a phone must be stingy with resource utilization to prevent performance degradation.
 
-This lead me to architect a solution with a minimal Browser footprint, using [Go](https://go.dev/) as the server engine and [Fiber](https://gofiber.io/) as the HTTP server. This led me to leveraging [Go HTML Templates](https://pkg.go.dev/html/template) with the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) to collaborate with [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client.
+This lead me to architect a solution with a minimal Browser footprint, using _Go_ as the server engine and _Fiber_ as the HTTP server and _Go HTML Templates_ with the _Fiber Template Engine_ to collaborate with _HTMX_, _HyperScript_to, and _Bootstrap 5_ manipulate the DOM Tree on the Client. This technology stack requires the Server Response Body to be an HTML string, whereas other stacks use JSON strings, requiring more complex technology stack on the Client. My teck stack ilso provides the software engineer with strategies to define precise places in the `DOM Tree`, as well as to decorate some of the DOM Tree elements with event handling instructions.
 
-Early in my work, someone challenged me to implement ‘Modal Dialogs’ issued by the server, such as those that would inform a guest they did not have authorization to access a resource. The excellent article [Two ways to build HTML dialogs using HTMX and HyperScript](https://medium.com/@martin.mohnhaupt/two-ways-to-build-html-dialogs-using-htmx-and-hyperscript-5f5eefb13c4c) by [Martin Mohnhaupt](https://medium.com/@martin.mohnhaupt) has been instrumental to aid me in thinking about and implementing `Modal Dialogs` in my webapp. 
+![Local Image](uml/components/webapp.png)
 
-This repository introduces two different methods to display `Modal Dialogs`, `Browser Modal Dialog` and `Server Modal Dialog`. A _Modal Dialog_ is a pop-up window that appears on top of the current browser page, requiring user interaction before the user can return to the main content. It is commonly used to request confirmation to proceed with a destructive operation, notify the user of a relevant application state, or collect required information from the user. We use _Browser Modal Dialogs_ to prompt the user to confirm an action, such as deleting a record, and _Server Modal Dialogs_ to either inform the user about the result of an operation, like lack of authorization for access a resource-- or to collect additional data, like a phone number.
+<sub>Webapp Components</sub>
 
-I will use Martin’s approach, refactored to suit my requirements, using a simple web application with a technology stack consisting of  [Go](https://go.dev/), [Fiber](https://gofiber.io/),  and the [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) on the Server, and [Bootstrap 5](https://getbootstrap.com/) , [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree on the Client. This technology stack requires the Server to serve HTML, whereas other stacks use JSON requiring more complex technology stack on the Client; it also provides the software engineer with strategies to define precise places in the `DOM Tree`, as well as to decorate some of the DOM Tree elements with event handling instructions. 
+Early in my work, the requirement arose to implement a `Modal Dialog` issued by the server to inform the guest they did not have authorization to access a resource. The excellent article _Two ways to build HTML dialogs using HTMX and HyperScrip_ by _Martin Mohnhaupt_ was instrumental in aid me to think about and implementing `_SMD_s` in my webapp. 
+
+ A _Modal Dialog_ is a pop-up window that appears on top of the current browser page, requiring user interaction before the user can return to the main content. It is commonly used to request confirmation to proceed with a destructive operation, notify the user of a relevant application state, or collect required information from the user. We use _BMDs_ to prompt the user to confirm an action, such as deleting a record, and _SMDs_ to either inform the user about the result of an operation, like lack of authorization for access a resource. This repository introduces approaches to handle both cases.
+
+
+I will use Martin’s approach, refactored to suit my requirements, using a simple web application with a technology described above. . 
 
 Note that:
-
+- I’ll use the term `BMD`, to refer to `Browser Modal Dialog`;
+- I’ll use the term `Client`, to refer to the_HTMX_ and _HyperScript_logic to handle the Templates returned by the _Server_ and hosted by any **modern** browser;
 - I’ll use the term `Server`, to refer to the `Go/Fiber` HTTP server;
-
+- I’ll use the term `SMD`, to refer to `_Server Modal Dialog_`;
 - I’ll use the term `Template`,to refer to the `GoFiber Template` engine;
-
-- I’ll use the term `Client`, to refer to the [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) logic to handle the Templates returned by the _Server_ and hosted by any **modern** browser;
-
 - I’ll use the term `webapp`, to refer to the web application comprising the _Client_ and _Server_ mentioned above;
 
 You can find the full implementation at [this repo](https://github.com/RodrigoMattosoSilveira/html_htmx-modal_dialogs) on [my GitHub account](https://github.com/RodrigoMattosoSilveira).
 
 # A Word About the Webapp Demo
-Web applications using complex Client technology stacks, such as [React](https://react.dev/) and its vast constellation of addons, can handle the logic to trigger, display, and manage _Modal Dialogs_  with minimal Server interaction. 
+Web applications using complex Client technology stacks, such as _React_ and its vast constellation of addons, can handle the logic to trigger, display, and manage _Modal Dialogs_  with minimal Server interaction. 
 
-This _webapp_ uses a significantly simpler Client technology stack, [HTMX](https://htmx.org/) and [HyperScript](https://hyperscript.org/) to manipulate the DOM Tree, with a limited use of Javascript. Instead of relying on JSON payload and complex logic to express the User Experience, it relys on fully rendered HTML. 
+This _webapp_ uses a significantly simpler Client technology stack, _HTMX_ _HyperScript_, and _Boostrap 5_ to manipulate the _DOM Tree_, with a limited use of _Javascript_. Instead of relying on _JSON_ payload and complex logic to express the User Experience, it relies on fully rendered _HTML_, or framgments thereof which  _HTMX_ _HyperScript_ and do a great job helping us insert. 
 
-The _Landing Page_ includes 3 buttons:  `Prompt`, `Inform`, and `Collect`; all three  share similar logic where the _Client_ requests _HTML_ from the Server, which is independent and different of the _Modal Dialogs’_ own logic. 
-
-The _Prompt_ button starts a _Modal Dialog_ which requires the guest to either okay or cancel an operation. When the guest triggers the _Inform_ button, a _Modal Dialog_ informs them about the server state, and they need to do nothing else. The _Collect_ button triggers a _Modal Dialog_ asking the guest to provide a data element, or dismiss the dialog; this is a more complex _Server_ _Modal Dialog_.
+The _Landing Page_ includes 3 buttons:  `Prompt`, `Inform`, and `Collect`. The _Prompt_ button starts a _BMD_ which requires the guest to either okay or cancel an operation. When the guest triggers the _Inform_ button, a _SMD_ informs them about the server state, and they need to do nothing else. The _Collect_ button triggers a _SMD_ asking the guest to provide a data element, or dismiss the dialog. There are important implementation diffferences between the two, whwich I'll discuss below.
 
 # Implementation
 I'll describe the webapp implementation in four section, as follows, including use case and sequence diagrams:
@@ -128,7 +129,7 @@ I'll focus on the markup required to render the Landing Page, ommiting everythin
 		</div>
 		<div class="card-body">
 			<button type="button" class="btn btn-danger" hx-get="/promptModal" hx-target="#htmx-browser-dialog-container">Prompt</button>
-			<button type="button" class="btn btn-warning" hx-get="/informModal" hx-target="#htmx-browser-dialog-container">Inform</button>
+			<button type="button" class="btn btn-warning" hx-get="/informModal">Inform</button>
 			<button type="button" class="btn btn-success" hx-get="/collectModal" hx-target="#htmx-server-dialog-container">Collect</button>
 		</div>
 	</div>
@@ -137,13 +138,13 @@ I'll focus on the markup required to render the Landing Page, ommiting everythin
 </html>
 ```
 Notes:
-- The architecture requires that I use two different landing regions for the _Modal Dialogs_, depending on their nature (it took me a long time to find an example that made a working distinction). I use ` <div id="htmx-browser-dialog-container">` to host _Browser Modal Dialogs_ and ` <div id="htmx-server-dialog-container">` to host _Server Modal Dialogs_; the the discussion below for the strategy to place them at these elements;
+- The architecture requires that I use two different landing regions for the _Modal Dialogs_, depending on their nature (it took me a long time to find an example that made a working distinction). I use ` <div id="htmx-browser-dialog-container">` to host __BMD_s_ and ` <div id="htmx-server-dialog-container">` to host __SMD_s_; the the discussion below for the strategy to place them at these elements;
+- The `Inform` buttom does not include a target; even if it did, given that the server found an error, it will have to change the target, as I'll show shortly;
 - I used a [Bootstrap Card](https://getbootstrap.com/docs/5.3/components/card/) to help build this responsive user experience expeditiously;
 - The heart of the User Experience logic reside in the element `<div class="card-body">`, consisting of three buttons:
-  - ` hx-get="/promptModal"` - Triggers the _Server_ to render a _Browser Modal Dialog_, prompting the guest to either proceed or abandon a dangerous operation;
-  - ` hx-get="/informModal"` - Triggers the _Server_ to render a _Server Modal Dialog_, informing the guest about a system state, like an attempt on the guest's part to access an unauthorized resource;
-  -   - ` hx-get="/collectModal"` - Triggers the _Server_ to render a _Server Modal Dialog_, prompting the guest to provide data;
-  -   
+  - ` hx-get="/promptModal"` - Triggers the _Server_ to render a __BMD__, prompting the guest to either proceed or abandon a dangerous operation;
+  - ` hx-get="/informModal"` - Triggers the _Server_ to render a __SMD__, informing the guest about a system state, like an attempt on the guest's part to access an unauthorized resource;
+  -   - ` hx-get="/collectModal"` - Triggers the _Server_ to render a __SMD__, prompting the guest to provide data; 
 
 ![Local Image](images/LandingPage.png)
 
@@ -194,8 +195,8 @@ Notes, the commands:
 - `return c.Render("modalDialog", fiber.Map { ... }` asks Fiber to use the provided _fiber.map_ to render the _Prompt Modal Dialog_, and return the HTML to the Client; 
 
 Observe that:
-- the _fiber.map_ is slightly different for each dialog, leaving it to the [Go HTML Templates](https://pkg.go.dev/html/template) to use it render the  _Modal Dialog_ based on its content;
-- the Client's [HTMX](https://htmx.org/) will place rendered _HTML_ on the location configured by the button that triggered this event, `hx-target="#htmx-browser-dialog-container">`
+- the _fiber.map_ is slightly different for each dialog, leaving it to the _Go HTML Templates_(https://pkg.go.dev/html/template) to use it render the  _Modal Dialog_ based on its content;
+- the Client's_HTMX_ will place rendered _HTML_ on the location configured by the button that triggered this event, `hx-target="#htmx-browser-dialog-container">`
 - See the notes and observations on the _Modal Dialog_ for the logic to close and remove the _Modal Dialog_ from the _DOM Tree_;
 
 ### Prompt Modal Dialog Client
@@ -242,7 +243,7 @@ Observe that:
 ```
 Notes:
 - I used the [Bootstrap Card](https://getbootstrap.com/docs/5.3/components/card/), embedded in an [HTML Form](https://www.w3schools.com/tags/tag_form.asp); this enables me to place the buttons anywhere in the _Card_, ensuring that, if their type is `submit`, the Client will send their form inputs to the server;
-- All _Modal Dialogs_ have an Exit button, `x`, configured to issue a `dialog_close` event, which is captured by the [HyperScript](https://hyperscript.org/) logic in the `<dialog/>` element at the top, closing the _Modal Dialog_ and removing it from the _DOM Tree_;
+- All _Modal Dialogs_ have an Exit button, `x`, configured to issue a `dialog_close` event, which is captured by the _HyperScript_logic in the `<dialog/>` element at the top, closing the _Modal Dialog_ and removing it from the _DOM Tree_;
 - the constructs of the type `{{ .<<name>>}}` assign values passed on the `c.Render` call thru the `fiber.map {...}`
 - the constructs of the type `{{if  ...}}` use `fiber.map {...}` parameters to fine tune the _Modal Dialog_; in this case, it add a `<button type="button" class="{{ .action_class}} ...` button, configured to use the `btn  btn-danger` class;
 
@@ -291,13 +292,16 @@ I show only a fragment of the `main.go` file, where it resides, for simplicity s
            }
 
         // Trigger a dialog_event in the server!
-        c.Set("HX-Trigger", "dialog_event")
+        c.Set("HX-Retarget", "#htmx-server-dialog-container")
+		c.Set("HX-Reswap", "beforeend")
+		c.Set("HX-Trigger", "dialog_event")
         return c.Render("modalDialog", data)
 	})
 ```
 Notes:
 - It has the same structure as the _Prompt_ _Modal Dialog_, except that it does not include a route to handle the guest's response, since it is in informational dialog.
 - Also, not how the `action-*` parameters are all blank; this enables the _Template_ parser to use it to avoid including unnecessary HTML elements;
+- I used `HX-Retarget` and `HX-Reswap` to change the the _HTMX_ context so it can place the _SMD_ where I want;
 
 ### Inform Modal Dialog Client
 It uses the same _HTML_ fragment as the other two, except that the data in the `fiber.Map { ...}` and the _HTML Template_ will render a slight different HTML; in this case it has the header and body, but is does not have an guest action buttons;
@@ -305,6 +309,25 @@ It uses the same _HTML_ fragment as the other two, except that the data in the `
 ![Local Image](images/InformModalDialog.png)
 
 <sub>Inform Modal Client DiaLog</sub>
+
+### The bug that got me here
+It has a simple `navbar`:
+``` html
+	<nav>
+		<a href="/">Home</a>
+		<a href="/people">People</a>
+		{{ if .IsLoggedIn }}
+			<a href="/profile">Profile</a>
+			<a href="/logout">Logout</a>
+		{{ else }}
+			<a href="/login">Login</a>
+		{{ end }}
+	</nav>
+```
+
+No matter what I tried, I was not able to get my _SMD_ working. After applying Martin's model, things got worse, but it offered me the insight on the problem's root cause. Once I replaced  `<a href="/people">People</a>` with  `<a class="nav_a" hx-get="/people">People</a>`, HTMX was happy and performed the replacements as expected.
+
+I have not found a reliable technical explanation for this, but I belive that _HTMX_ establishes as context for an HTTP Request so that it can hanble its HTTP Response. By not decorating  `<a href="/people">People</a>` with any _HTMX_ ajax parameters, it did not have a context and simply replaced the whole body with the HTML in the HTTP Response.
 
 ## Collect Modal Dialog
 ### Collect Modal Dialog Use Cases
@@ -349,7 +372,7 @@ I show only a fragment of the `main.go` file, where it resides, for simplicity s
 ```
 - Notes:
   - The `app.Get("/collectModal", func(c *fiber.Ctx) error {` setup logic is similar to the other two _Modal Dialogs_;
-  - The `c.Render("modalDialog", data)` is preceded by the ` c.Set("HX-Trigger", "dialog_event")` command, which is the key to trigger a _Server Modal Dialog_ in this architecture; as the _Client_ starts to process this _HTTP Response_; see the client for more details:
+  - The `c.Render("modalDialog", data)` is preceded by the ` c.Set("HX-Trigger", "dialog_event")` command, which is the key to trigger a __SMD__ in this architecture; as the _Client_ starts to process this _HTTP Response_; see the client for more details:
 
 ![Local Image](images/CollectModalDialogServerLog.png)
 
@@ -431,4 +454,15 @@ My goal was to learn how to implement server triggered modal dialogs using the t
 
 I found an excellent example in the article [Two ways to build HTML dialogs using HTMX and HyperScript](https://medium.com/@martin.mohnhaupt/two-ways-to-build-html-dialogs-using-htmx-and-hyperscript-5f5eefb13c4c) by Martin Mohnhaupt, add adapted it my technology stack.
 
-Martin provides two examples, one on how to trigger a _Server Modal Dialog_ and another  on how to trigger a Browser Modal Dialog_. In this article I expanded Martin's work to have two distinct _Server Modal Dialogs_, one providing server state information to the guest, and the other collecting data from the guest.
+Martin provides two examples, one on how to trigger a __SMD__ and another  on how to trigger a _BMD__. In this article I expanded Martin's work to have two distinct __SMD_s_, one providing server state information to the guest, and the other collecting data from the guest.
+
+# Referencees
+- [Bootstrap 5](https://getbootstrap.com/)
+- [Fiber](https://gofiber.io/)
+- [Fiber Template Engine](https://docs.gofiber.io/template/html_v2.x.x/html/) 
+- [Go](https://go.dev/)
+- [Go HTML Templates](https://pkg.go.dev/html/template)
+- [HTMX](https://htmx.org/)
+- [HyperScript](https://hyperscript.org/)
+- [React](https://react.dev/)
+- [Two ways to build HTML dialogs using HTMX and HyperScript](https://medium.com/@martin.mohnhaupt/two-ways-to-build-html-dialogs-using-htmx-and-hyperscript-5f5eefb13c4c)

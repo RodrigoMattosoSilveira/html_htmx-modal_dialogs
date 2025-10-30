@@ -1,0 +1,30 @@
+@startuml webapp
+title Weapp Components
+
+Client as c
+component c {
+  [HTMX] as hx
+  [Hyperscript] as hy
+  component [Browser] as b
+  portout p1
+}
+
+Server as s
+component s {
+    [Go/Fiber Web Server] as fws
+    [Fiber Template] as ft
+    [Go HTML] as gh
+    portin p2
+}
+
+
+b -- hx
+b -- hy
+b --> p2
+p2 --> fws
+fws --> p1
+p1 --> b
+fws -- ft
+ft -- gh
+
+@endum
